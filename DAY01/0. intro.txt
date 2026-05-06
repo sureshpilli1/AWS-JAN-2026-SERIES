@@ -1,5 +1,5 @@
 Cloud Fundamentals Notes
-SP vs CSP vs Infrastructure vs Scaling vs Load Balancer vs DNS Flow
+ISP vs CSP vs Infrastructure vs Scaling vs Load Balancer vs DNS Flow
 1. ISP (Internet Service Provider)
 What is ISP
 An ISP is a company that provides **internet connectivity** to homes, offices, data centers, and cloud networks.
