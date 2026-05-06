@@ -20,7 +20,7 @@ Without ISP:
 
 2. CSP (Cloud Service Provider)
 What is CSP?
-A **CSP** is a company that provides **IT infrastructure as a service** (servers, storage, networks, databases, security) over the internet.
+A CSP is a company that provides **IT infrastructure as a service** (servers, storage, networks, databases, security) over the internet.
 What CSP provides
 * Compute (servers / VMs)
 * Storage (object/block/file)
@@ -30,16 +30,15 @@ What CSP provides
 Examples
 * AWS, Azure, GCP
 Key difference (ISP vs CSP)
-* **ISP gives internet**
-* **CSP gives IT infrastructure over internet**
-
+ISP gives internet
+CSP gives IT infrastructure over internet
 Think like this:
 * ISP = Road
 * CSP = City (buildings, power, services inside the city)
 
 3. What is “Infrastructure” (Infra)
 Meaning
-**Infrastructure** is the complete setup needed to run an application reliably:
+Infrastructure is the complete setup needed to run an application reliably:
 * Servers
 * Network
 * Security
@@ -48,11 +47,12 @@ Meaning
 * Monitoring
 * Scaling and failover
 Infra in simple line
-Infra is **everything behind the application** that makes it reachable, fast, and safe.
+Infra is everything behind the application that makes it reachable, fast, and safe.
 
 4. Core Infra Components
-### webserver + app + db + storage + network + firewall
+webserver + app + db + storage + network + firewall
 Let’s break it down clearly.
+
 A) Web Server
 Role: Handles incoming HTTP/HTTPS requests from users.
 Common web servers:
@@ -64,6 +64,7 @@ Responsibilities:
 * Serve static files
 * Reverse proxy to application
 * Basic caching and compression
+
 B) Application Server (App)
 Role: Runs your business logic.
 Examples:
@@ -75,6 +76,7 @@ Responsibilities:
 * Login, validation, rules, workflows
 * Talks to DB and other services
 * Generates API response / HTML response
+
 C) Database (DB)
 Role: Stores structured data permanently.
 Examples:
@@ -85,6 +87,7 @@ Responsibilities:
 * Data integrity
 * Querying, indexing
 * Backup and restore
+
 D) Storage
 Role: Stores files and objects (images, PDFs, logs, backups, videos).
 Types:
@@ -104,6 +107,7 @@ Includes:
 * Route tables
 * Internet Gateway / NAT
 * DNS and IP addressing
+
 F) Firewall (Security Layer)
 Role: Controls traffic. Allows only required ports from allowed sources.
 In cloud, firewall is mainly:
@@ -114,6 +118,7 @@ Example rules:
 * Allow 443 from internet to Load Balancer
 * Allow 8080 from Load Balancer to App servers
 * Allow 3306 only from App to DB
+
 5. Scaling (Most Important Production Concept)
 What is Scaling?
 Scaling means increasing capacity when traffic increases, and reducing when traffic decreases.
@@ -128,7 +133,6 @@ Cons:
 * Has a limit
 * Might require downtime
 * Not ideal for huge traffic
-
 B) Horizontal Scaling (Scale Out)
 Add more servers:
 * 1 app server → 2 → 5 → 20
@@ -151,12 +155,10 @@ What Load Balancer does
 * Removes unhealthy servers automatically
 * Supports SSL termination
 * Enables auto scaling setups
-
 Common load balancing algorithms
 * Round Robin
 * Least connections
 * Weighted routing (advanced)
-
 Example traffic distribution
 User requests:
 * Request1 → App1
@@ -209,9 +211,6 @@ App/Web Server 1      App/Web Server 2
             |
             v
       Storage (S3/EBS/EFS)
-```
-
----
 
 10. Why DNS is used (instead of IP)
 DNS gives:
@@ -232,7 +231,7 @@ DNS gives:
 * Use security groups / firewall rules
 * Use DNS pointing to LB endpoint
 * Scale horizontally for real production traffic
-If you want, I can also create **AWS-mapped version** of the same doc (very useful for your AWS series), like:
+If you want, I can also create AWS-mapped version of the same doc (very useful for your AWS series), like:
 * ISP → Office Internet
 * CSP → AWS
 * Webserver/App → EC2 / ECS / EKS
