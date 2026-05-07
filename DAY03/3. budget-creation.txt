@@ -1,296 +1,170 @@
-# AWS Budgets – In-Depth Documentation
+AWS Budgets – In-Depth Documentation
 
----
-
-## 1. What is AWS Budget?
-
-**AWS Budgets** is a cost-management service that helps you **plan, monitor, and control AWS spending** by setting **custom budgets** and receiving **alerts** when usage or cost crosses defined thresholds.
-
+1. What is AWS Budget?
+AWS Budgets is a cost-management service that helps you plan, monitor, and control AWS spending by setting custom budgets and receiving alerts when usage or cost crosses defined thresholds.
 Budgets help answer critical questions:
-
 * How much am I allowed to spend?
 * Where is money being spent?
 * When should I be alerted?
 * How do I prevent unexpected bills?
-
 AWS Budgets works closely with **AWS Billing, Cost Explorer, and Alerts**.
 
----
-
-## 2. Why AWS Budgets Is Mandatory in Real Accounts
-
+2. Why AWS Budgets Is Mandatory in Real Accounts
 In real environments:
-
 * Engineers forget to stop EC2 instances
 * NAT Gateways run continuously
 * EBS volumes stay unused
 * Test environments are left running
-
 Without budgets:
-
 * Bills grow silently
 * Issues are noticed only after invoice generation
-
 With budgets:
-
-* You get **early warnings**
-* You gain **cost visibility**
-* You can **take action before damage**
-
-> **Production rule:**
+* You get early warnings
+* You gain cost visibility
+* You can take action before damage
+> Production rule:
 > Every AWS account must have at least one **monthly cost budget with alerts**.
 
----
-
-## 3. Types of AWS Budgets
-
-AWS supports **four budget types**.
-
----
-
-### 3.1 Cost Budget
-
-Tracks **actual or forecasted AWS spending**.
-
+3. Types of AWS Budgets
+AWS supports four budget types.
+3.1 Cost Budget
+Tracks actual or forecasted AWS spending
 Used for:
-
 * Monthly account limits
 * Project-wise cost tracking
 * Team-wise cost monitoring
-
 Example:
-
 * Monthly budget = 2,000 INR
 * Alert at 80% and 100%
-
----
-
-### 3.2 Usage Budget
-
-Tracks **service usage**, not cost.
-
+3.2 Usage Budget
+Tracks service usage, not cost.
 Used for:
-
 * EC2 hours
 * S3 storage size
 * Data transfer usage
-
 Example:
-
 * EC2 usage should not exceed 500 hours/month
-
----
-
-### 3.3 Reservation Budget
-
-Tracks **Reserved Instance (RI) or Savings Plan utilization**.
-
+3.3 Reservation Budget
+Tracks Reserved Instance (RI) or Savings Plan utilization.
 Used for:
-
 * Ensuring reserved capacity is fully used
 * Avoiding wasted reservations
-
----
-
-### 3.4 Savings Plans Budget
-
+3.4 Savings Plans Budget
 Tracks:
-
 * Savings plan utilization
 * Savings plan coverage
-
 Used for:
-
 * Long-term cost optimization
 * Enterprise accounts
 
----
-
-## 4. Budget Scope & Filters
-
+4. Budget Scope & Filters
 AWS Budgets can be applied at different levels.
-
-### Scope Options
-
+Scope Options
 * Entire AWS account
 * Linked account (Organizations)
 * Specific service (EC2, S3, RDS)
 * Specific region
 * Cost allocation tags (very important)
-
-### Tag-Based Budgets (Best Practice)
-
+Tag-Based Budgets (Best Practice)
 If you tag resources like:
-
-```
 Project = Ecommerce
 Env = Dev
 Owner = DevOps
-```
-
 You can create budgets per:
-
 * Project
 * Environment
 * Team
 
----
-
-## 5. Budget Thresholds & Alerts
-
-Budgets become powerful only with **alerts**.
-
-### Alert Types
-
+5. Budget Thresholds & Alerts
+Budgets become powerful only with alerts.
+Alert Types
 * Actual cost alerts
 * Forecasted cost alerts
-
-### Common Thresholds
-
+Common Thresholds
 * 50% – early warning
 * 80% – action required
 * 100% – critical alert
-
 Alerts are sent via:
-
 * Email
 * SNS (can trigger Lambda or automation)
 
----
-
-## 6. Step-by-Step: AWS Cost Budget Creation (Console)
-
-### Step 1: Open Billing Console
-
+6. Step-by-Step: AWS Cost Budget Creation (Console)
+Step 1: Open Billing Console
 * Login to AWS account
-* Go to **Billing and Cost Management**
-* Select **Budgets**
-
+* Go to Billing and Cost Management
+* Select Budgets
 > Note: Billing is visible only to root user or billing-enabled IAM users.
-
----
-
-### Step 2: Create Budget
-
-* Click **Create budget**
-* Choose **Cost budget**
+Step 2: Create Budget
+* Click Create budget
+* Choose Cost budget
 * Select:
-
   * Monthly / Quarterly / Annual
   * Fixed budget
-
----
-
-### Step 3: Define Budget Amount
-
+Step 3: Define Budget Amount
 * Enter budget value (example: 2,000 INR)
 * Choose currency
-* Select **Actual cost** or **Forecasted cost**
-
----
-
-### Step 4: Set Scope (Optional but Recommended)
-
+* Select Actual cost or Forecasted cost
+Step 4: Set Scope (Optional but Recommended)
 * Apply filters:
-
   * Service = EC2
   * Region = ap-south-1
   * Tag = Project:Demo
-
-This helps control cost per component.
-
----
-
-### Step 5: Configure Alerts
-
+  This helps control cost per component.
+Step 5: Configure Alerts
 * Add alert threshold (example: 80%)
 * Choose notification type
 * Add email recipients
 * Optionally connect SNS topic
-
----
-
-### Step 6: Review & Create
-
+Step 6: Review & Create
 * Review budget configuration
 * Create budget
-
 Budget becomes active immediately.
-
----
-
-## 7. Step-by-Step: AWS Budget Using Forecasted Cost
-
+7. Step-by-Step: AWS Budget Using Forecasted Cost
 Forecasted budgets:
-
 * Predict future spend based on usage trends
-* Alert you **before** limit is crossed
-
+* Alert you before limit is crossed
 Recommended setup:
-
 * Forecasted alert at 90%
 * Actual alert at 80% and 100%
+This gives maximum protection.
 
-This gives **maximum protection**.
-
----
-
-## 8. AWS Budget with SNS (Advanced)
-
-### Why SNS?
-
+8. AWS Budget with SNS (Advanced)
+Why SNS?
 SNS allows budgets to:
-
 * Trigger Lambda
 * Send Slack alerts
 * Auto-stop resources (advanced automation)
-
-### Flow
-
+Flow
 1. Budget threshold crossed
 2. Budget sends alert to SNS
 3. SNS triggers Lambda
 4. Lambda takes action (notify / stop / tag)
-
 Used in:
-
 * Dev/test environments
 * Training accounts
 * Cost-controlled projects
 
----
-
-## 9. IAM Permissions for AWS Budgets
-
+9. IAM Permissions for AWS Budgets
 To manage budgets, IAM user must have permissions like:
-
 * `budgets:ViewBudget`
 * `budgets:ModifyBudget`
 * `ce:GetCostAndUsage`
 * `billing:ViewBilling`
-
 Best practice:
-
 * Grant budget access only to admins or finance roles
 
----
-
-## 10. Common Mistakes with AWS Budgets
-
+10. Common Mistakes with AWS Budgets
 * Creating budget without alerts
 * Only creating annual budget
 * Not using forecasted budgets
 * No tag-based budgets
 * Budget created but email ignored
 * Assuming budget will stop resources automatically (it won’t)
+> Important:
+> AWS Budget only alerts.
+> It does not block or stop resources by default.
 
-> **Important:**
-> AWS Budget only **alerts**.
-> It does **not block or stop resources** by default.
-
----
-
-## 11. AWS Budget vs Cost Explorer
+11. AWS Budget vs Cost Explorer
 
 | Feature     | AWS Budgets      | Cost Explorer |
 | ----------- | ---------------- | ------------- |
@@ -302,10 +176,7 @@ Best practice:
 
 Use both together.
 
----
-
-## 12. Best Practices (Production Ready)
-
+12. Best Practices (Production Ready)
 * Create monthly cost budget for every account
 * Use multiple thresholds (50/80/100)
 * Enable forecasted alerts
@@ -314,37 +185,24 @@ Use both together.
 * Review budgets monthly
 * Educate team about alerts
 
----
-
-## 13. Real-World Example
-
+13. Real-World Example
 Scenario:
-
 * Training AWS account
 * Budget: 3,000 INR/month
 * EC2 + NAT Gateway + S3 used
-
 Setup:
-
 * Cost budget = 3,000 INR
 * Alert at 70% → email
 * Alert at 90% → SNS → Lambda
 * Lambda stops non-prod EC2
-
 Result:
-
 * Zero bill shock
 * Controlled spending
 * Safe training environment
 
----
-
-## 14. Summary
-
-AWS Budgets is a **guardrail**, not a blocker.
-
+14. Summary
+AWS Budgets is a guardrail, not a blocker.
 It provides:
-
 * Visibility
 * Alerts
 * Predictability
