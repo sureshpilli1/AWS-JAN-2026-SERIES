@@ -1,6 +1,9 @@
-IAM (Identity and Access Management) – Introduction
-IAM allows you to securely manage access to AWS services and resources. With IAM, you can create users, groups, and roles, assign permissions using policies, enforce password complexity, and manage access credentials.
-When an AWS account is created, a root user is automatically provisioned. IAM enables the creation of individual users for secure and auditable access to AWS services, avoiding the use of the root user for everyday tasks.
+IAM (Identity and Access Management) – 
+Introduction
+IAM allows you to securely manage access to AWS services and resources. 
+With IAM, you can create users, groups, and roles, assign permissions using policies, enforce password complexity, and manage access credentials.
+When an AWS account is created, a root user is automatically provisioned. 
+IAM enables the creation of individual users for secure and auditable access to AWS services, avoiding the use of the root user for everyday tasks.
 
 Step-by-Step: IAM User Creation (with Custom Password)
 Step 1: Open the IAM Console
