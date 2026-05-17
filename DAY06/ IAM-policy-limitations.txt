@@ -1,135 +1,78 @@
-# AWS Identity and Access Management – IAM Policy Limitations (Complete Guide)
-
----
-
-## 1. What Are IAM Policy Limitations?
-
+AWS Identity and Access Management – IAM Policy Limitations (Complete Guide)
+1. What Are IAM Policy Limitations?
 IAM policy limitations define **how many policies you can create, attach, and how large they can be**, along with **structural and functional boundaries** of IAM.
-
 These limits exist to:
-
 * Maintain performance
 * Prevent overly complex permission evaluation
 * Encourage clean and scalable IAM design
-
 Understanding these limits is **mandatory** for real-world AWS usage.
 
----
-
-## 2. Policy Size Limits
-
-### Maximum Policy Document Size
-
+2. Policy Size Limits
+Maximum Policy Document Size
 * **Customer Managed Policy**: **6,144 characters**
 * **Inline Policy**: **2,048 characters**
-
 If the policy exceeds this size:
-
 * AWS will reject the policy
 * You must split it into multiple policies
-
-### Practical Impact
-
+Practical Impact
 * Large wildcard policies fit easily
 * Fine-grained policies with many ARNs may hit limits
 * Over-engineering policies can cause failures
 
----
-
-## 3. Policy Version Limits
-
-### Versions per Customer Managed Policy
-
+3. Policy Version Limits
+Versions per Customer Managed Policy
 * Maximum **5 versions**
 * Only **1 version can be active**
-
 If you create a 6th version:
-
 * You must delete an older version first
-
-### Why This Matters
-
+Why This Matters
 * Policy history is limited
 * Poor version management can block updates
 * Best practice: clean unused versions regularly
 
----
-
-## 4. Policy Attachment Limits (Very Important)
-
-### Policies Attached to a Principal (User / Group / Role)
-
+4. Policy Attachment Limits (Very Important)
+Policies Attached to a Principal (User / Group / Role)
 * Maximum **10 managed policies** can be attached to:
-
   * One IAM user
   * One IAM group
   * One IAM role
-
 This includes:
-
 * AWS Managed Policies
 * Customer Managed Policies
-
-### Inline Policies
-
+Inline Policies
 * **Unlimited inline policies** (not recommended)
-
 > Even though inline policies have no numeric limit, they increase complexity and are harder to audit.
 
----
-
-## 5. IAM Entity Policy Limits
-
-### IAM User
-
+5. IAM Entity Policy Limits
+IAM User
+* Max **10 managed policies**
+* Unlimited inline policies
+IAM Group
+* Max **10 managed policies**
+* Unlimited inline policies
+IAM Role
 * Max **10 managed policies**
 * Unlimited inline policies
 
-### IAM Group
-
-* Max **10 managed policies**
-* Unlimited inline policies
-
-### IAM Role
-
-* Max **10 managed policies**
-* Unlimited inline policies
-
----
-
-## 6. IAM Policy Content Limitations
-
-### No Conditional Logic Like Programming
-
+6. IAM Policy Content Limitations
+No Conditional Logic Like Programming
 IAM policies:
-
 * Do NOT support loops
 * Do NOT support if-else logic
 * Do NOT support variables (except policy variables)
-
 Policies are **declarative**, not procedural.
 
----
-
-## 7. Explicit Deny Behavior (Functional Limitation)
-
+7. Explicit Deny Behavior (Functional Limitation)
 * **Explicit Deny always overrides Allow**
 * You cannot override a Deny using another Allow
-
 Example:
-
 * Policy A → Allow EC2
 * Policy B → Deny EC2
   ➡ Access is denied
-
 This is by design and cannot be bypassed.
 
----
-
-## 8. IAM Policies Do NOT Control Everything
-
+8. IAM Policies Do NOT Control Everything
 IAM policies **cannot**:
-
 * Stop AWS services automatically
 * Enforce cost limits
 * Block billing
@@ -138,103 +81,64 @@ IAM policies **cannot**:
 
 IAM controls **permissions**, not **behavior**.
 
----
-
-## 9. Resource-Level Limitation
-
+9. Resource-Level Limitation
 Not all AWS services support **resource-level permissions**.
-
 ### Examples
-
 * S3 → Supports bucket/object level
 * EC2 → Many actions require `*`
 * IAM → Mostly `*`
 * CloudWatch → Partial support
-
 This means:
-
 * You may be forced to allow access to all resources for certain actions
 
----
-
-## 10. Region Restriction Limitations
-
+10. Region Restriction Limitations
 IAM policies:
-
 * Are **global**
 * Do not belong to a specific region
-
 Region restriction is possible only via:
-
 * Conditions (`aws:RequestedRegion`)
 * SCPs (recommended for org-level control)
 
----
-
-## 11. Policy Evaluation Complexity Limit
-
+11. Policy Evaluation Complexity Limit
 AWS limits the **total policy evaluation size** per request.
-
 Includes:
-
 * Identity policies
 * Resource policies
 * Permission boundaries
 * SCPs
 * Session policies
-
 If the combined policy size is too large:
-
 * Request may fail
 * Permissions may not evaluate as expected
 
----
-
-## 12. Permissions Boundary Limitations
-
+12. Permissions Boundary Limitations
 * Permissions boundaries **do not grant access**
 * They only **restrict maximum permissions**
 * Must be used with identity policies
-
 Common misunderstanding:
-
 > “Boundary gives permission” ❌
 > “Boundary limits permission” ✅
 
----
-
-## 13. Inline Policy Limitations (Design Issue)
-
+13. Inline Policy Limitations (Design Issue)
 Although inline policies are allowed:
-
 * They are tightly coupled to one identity
 * Hard to reuse
 * Hard to audit
 * Easy to forget
-
 AWS best practice:
-
 * Prefer **Customer Managed Policies**
 * Avoid inline policies in production
 
----
-
-## 14. IAM Policy Does Not Guarantee Access
-
+14. IAM Policy Does Not Guarantee Access
 Even if IAM policy allows an action, access can still fail due to:
-
 * SCP deny
 * Resource-based policy deny
 * Missing trust relationship (roles)
 * VPC endpoint policy
 * Organization restrictions
-
 IAM is **one layer**, not the only layer.
 
----
-
-## 15. Summary Table – Key IAM Policy Limits
-
+15. Summary Table – Key IAM Policy Limits
 | Item                          | Limit                |
 | ----------------------------- | -------------------- |
 | Customer Managed Policy Size  | 6,144 characters     |
@@ -246,10 +150,7 @@ IAM is **one layer**, not the only layer.
 | Region Scope                  | Global               |
 | Programming Logic             | Not supported        |
 
----
-
-## 16. Real-World Design Best Practices
-
+16. Real-World Design Best Practices
 * Split large permissions into multiple policies
 * Use groups and roles instead of users
 * Avoid inline policies
@@ -258,14 +159,9 @@ IAM is **one layer**, not the only layer.
 * Combine IAM with SCPs and Budgets
 * Always design for **least privilege**
 
----
-
-## Final Note
-
+Final Note
 IAM policies are powerful but **not unlimited**.
-
 Strong AWS engineers know:
-
 * What IAM **can** do
 * What IAM **cannot** do
 * When to use **SCP**, **Budgets**, **Organizations**, and **Resource Policies**
