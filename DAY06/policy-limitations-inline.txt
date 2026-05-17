@@ -1,79 +1,53 @@
-# IAM Policy Limitations – Complete In-Depth Documentation
-
+IAM Policy Limitations – Complete In-Depth Documentation
 AWS Identity and Access Management enforces **strict limits** on how many policies can be attached, how large they can be, and where they can be used.
 Understanding these limits is critical to avoid **permission sprawl, hidden access, and scaling issues**.
 
----
-
-## 1. Types of IAM Policies (Foundation)
-
+1. Types of IAM Policies (Foundation)
 IAM supports **two main policy types**:
-
-### 1) Managed Policies
-
+1) Managed Policies
 * Created once
 * Can be attached to **multiple users, groups, and roles**
 * Reusable and scalable
-
-### 2) Inline Policies
-
+2) Inline Policies
 * Directly embedded into **one user, group, or role**
 * **Cannot be reused**
 * Tightly coupled to that identity
 
----
-
-## 2. Managed Policy Limits (Default AWS Limits)
-
-### A) Customer-Managed Policies
-
+2. Managed Policy Limits (Default AWS Limits)
+A) Customer-Managed Policies
 | Limit                  | Value                 |
 | ---------------------- | --------------------- |
 | Policies per account   | **1,500**             |
 | Policy size            | **6,144 characters**  |
 | Versions per policy    | **5** (only 1 active) |
 | Attachments per policy | **Unlimited**         |
-
 Important points:
-
 * Older versions must be deleted manually
 * Exceeding 5 versions blocks updates
 * Size includes JSON + whitespace
 
----
-
-### B) AWS Managed Policies
-
+B) AWS Managed Policies
 | Aspect          | Details     |
 | --------------- | ----------- |
 | Created by AWS  | Yes         |
 | Editable        | No          |
 | Version control | AWS manages |
 | Account limit   | Not counted |
-
 Used for:
-
 * Quick access
 * Standard roles
 * Baseline permissions
 
----
-
-## 3. Inline Policy Limits (Very Important)
-
+3. Inline Policy Limits (Very Important)
 Inline policies have **stricter and more dangerous limitations**.
-
-### Inline Policy Size Limit
-
+Inline Policy Size Limit
 | Policy Type   | Max Size             |
 | ------------- | -------------------- |
 | Inline policy | **2,048 characters** |
 
 This is **one-third** of managed policy size.
 
----
-
-### Inline Policy Count Limits
+Inline Policy Count Limits
 
 | Identity  | Max Inline Policies |
 | --------- | ------------------- |
@@ -82,14 +56,10 @@ This is **one-third** of managed policy size.
 | IAM Role  | **10**              |
 
 After this:
-
 * You **cannot add more inline policies**
 * Must delete or redesign permissions
 
----
-
-## 4. Attachment Limits (Critical for Design)
-
+4. Attachment Limits (Critical for Design)
 ### Managed Policy Attachments
 
 | Identity  | Max Managed Policies |
@@ -99,56 +69,36 @@ After this:
 | IAM Role  | **10**               |
 
 Even if:
-
 * Policies are small
 * Policies are AWS-managed
-
 The limit is still **10**.
 
----
-
-## 5. Policy Evaluation Is NOT Limited by Count
-
+5. Policy Evaluation Is NOT Limited by Count
 Important concept:
-
 > IAM does **not stop evaluating** because limits are reached.
-
 If a user has:
-
 * 10 managed policies
 * 10 inline policies
 * Group policies
 * SCPs
-
 AWS evaluates **all of them together**.
-
 This causes:
-
 * Unexpected allows
 * Hard-to-trace access
 * Security confusion
 
----
-
-## 6. Inline Policies – Why They Are Dangerous
-
+6. Inline Policies – Why They Are Dangerous
 Inline policies:
-
 * Are **hidden** inside the identity
 * Cannot be reused
 * Are easy to forget
 * Bypass centralized review
 * Increase audit complexity
-
 If a user is deleted:
-
 * Inline policies are deleted silently
 * No record remains unless logged separately
 
----
-
-## 7. Best Practice Rule (Very Important)
-
+7. Best Practice Rule (Very Important)
 | Use Case             | Recommended Policy Type     |
 | -------------------- | --------------------------- |
 | Reusable permissions | Managed policy              |
@@ -159,26 +109,17 @@ If a user is deleted:
 
 Inline policies should be **rare and intentional**.
 
----
-
-## 8. Policy Size Limitation – Practical Impact
-
+8. Policy Size Limitation – Practical Impact
 Because of size limits:
-
 * Large policies must be split
 * Conditions must be optimized
 * Wildcards used carefully
-
 Example problem:
-
 * Adding IP + MFA + time + VPC conditions
 * Inline policy hits 2 KB quickly
 * Managed policy handles it safely
 
----
-
-## 9. Inline vs Managed – Direct Comparison
-
+9. Inline vs Managed – Direct Comparison
 | Aspect            | Inline Policy   | Managed Policy |
 | ----------------- | --------------- | -------------- |
 | Reusable          | No              | Yes            |
@@ -188,45 +129,28 @@ Example problem:
 | Audit visibility  | Poor            | Good           |
 | Deletion behavior | Auto-deleted    | Independent    |
 
----
-
-## 10. Hidden Limitation Many Miss
-
-### Groups + Inline Policies
-
+10. Hidden Limitation Many Miss
+Groups + Inline Policies
 If:
-
 * Group has inline policy
 * User inherits it
-
 The inline policy:
-
 * Is not visible at user level
 * Still fully effective
-
 This causes confusion during audits.
 
----
-
-## 11. How Limits Affect Real Environments
-
+11. How Limits Affect Real Environments
 Typical failure patterns:
-
 * “Policy size exceeded” error
 * “Maximum policies attached” error
 * Permissions working unexpectedly
 * Inline policies bypassing design rules
-
 Root cause is usually **poor policy architecture**.
 
----
-
-## 12. Scaling-Safe Policy Design Guidelines
-
+12. Scaling-Safe Policy Design Guidelines
 * Prefer **managed policies**
 * Keep inline policies minimal
 * Separate:
-
   * Read
   * Write
   * Admin
@@ -234,16 +158,10 @@ Root cause is usually **poor policy architecture**.
 * Centralize policy ownership
 * Regularly review credential report + policies
 
----
-
-## 13. One Clear Statement
-
+13. One Clear Statement
 > “IAM policy limits are not just technical restrictions; they enforce good security design and prevent permission sprawl.”
 
----
-
-## 14. Summary (Conceptual)
-
+14. Summary (Conceptual)
 * Inline policies are **limited, hidden, and risky**
 * Managed policies are **scalable and auditable**
 * Size and count limits directly affect architecture
