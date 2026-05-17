@@ -1,46 +1,30 @@
-## Audit Trail – Small Introduction (IAM Context)
-
+Audit Trail – Small Introduction (IAM Context)
 AWS CloudTrail provides an **audit trail** in AWS.
 An audit trail means a **record of every action performed by a user, role, or AWS service** in your AWS account.
-
 Whenever a user does anything like:
-
 * Login to AWS
 * Create or delete an EC2 instance
 * Attach or remove an IAM policy
 * Change security settings
-
 AWS **records who did what, when, from where, and using which service**.
 
----
-
-## Searching Audit Trail by Username (Very Important for IAM)
-
+Searching Audit Trail by Username (Very Important for IAM)
 Using **CloudTrail**, you can search logs **based on IAM username or role name**.
-
 You can answer questions like:
-
 * Which IAM user deleted an EC2 instance?
 * Who modified an IAM policy?
 * At what time was a resource accessed?
 * From which IP address did the user login?
-
 This is extremely useful for:
-
 * **Security investigation**
 * **Compliance & audits**
 * **Troubleshooting production issues**
 * **Tracking misuse or unauthorized access**
 
----
-
-## Simple Real-Time Example (Interview Friendly)
-
+Simple Real-Time Example (Interview Friendly)
 > “In our project, whenever any issue happened in production, we used CloudTrail to check the audit trail and identify **which IAM user or role performed the action**, along with timestamp and source IP.”
 
----
-
-## One-Line Definition (For Interviews)
+One-Line Definition (For Interviews)
 
 > **Audit Trail is a log of all AWS account activities that helps track user actions, security events, and changes using CloudTrail.**
 
