@@ -1,240 +1,141 @@
-# AWS Identity and Access Management (IAM) Policies – Complete Documentation
+AWS Identity and Access Management (IAM) Policies – Complete Documentation
 
----
-
-## 1. What is an IAM Policy?
-
+1. What is an IAM Policy?
 An **IAM Policy** is a document that defines **permissions** in an AWS environment.
-
 In simple terms:
-
 * A policy answers **who can do what on which AWS resource**
 * Policies are written in **JSON format**
 * Policies are attached to:
-
   * Users
   * Groups
   * Roles
   * AWS resources (in some cases)
-
 IAM policies follow a **permission-based access control model**.
 
----
-
-## 2. Why IAM Policies Are Important
-
+2. Why IAM Policies Are Important
 Without IAM policies:
-
 * Everyone would have full access
 * Security risks increase
 * Accidental deletion of resources can happen
 * Compliance becomes impossible
-
 IAM policies help enforce:
-
 * Least privilege
 * Separation of duties
 * Controlled access
 * Auditable permissions
 
----
-
-## 3. Types of IAM Policies
-
+3. Types of IAM Policies
 AWS supports **three major policy types**.
 
----
-
-## 4. AWS Managed Policies
-
-### What are AWS Managed Policies?
-
+4. AWS Managed Policies
+What are AWS Managed Policies?
 These are **predefined policies created and maintained by AWS**.
-
 Characteristics:
-
 * Created by AWS
 * Automatically updated when services change
 * Cannot be edited
 * Cannot be deleted by customers
-
-### Examples
-
+Examples
 * `AmazonS3ReadOnlyAccess`
 * `AmazonEC2FullAccess`
 * `ReadOnlyAccess`
-
-### When to Use
-
+When to Use
 * Standard access requirements
 * Quick setup
 * Less customization needed
 
----
-
-## 5. AWS Managed Policies – Job Function Policies
-
-### What are Job Function Policies?
-
+5. AWS Managed Policies – Job Function Policies
+What are Job Function Policies?
 These are **AWS-managed policies designed around common job roles**.
-
 AWS maps typical job responsibilities to service-level permissions.
-
-### Examples
-
-#### DBA (Database Administrator)
-
+Examples
+DBA (Database Administrator)
 * Database services → Full access
 * Storage services → Limited access
 * Compute services → Read-only access
-
-#### Network Administrator
-
+Network Administrator
 * VPC & networking services → Full access
 * Compute services → Read-only access
-
-### Key Points
-
+Key Points
 * Cannot be edited or deleted
 * Useful for role-based access
 * Best for initial role setup
 * Often too broad for strict security environments
 
----
-
-## 6. Customer Managed Policies
-
-### What are Customer Managed Policies?
-
+6.Customer Managed Policies
+What are Customer Managed Policies?
 These are **custom policies created by customers** based on their specific requirements.
-
 Characteristics:
-
 * Fully editable
 * Can be deleted
 * Version controlled by AWS
 * Reusable across users, groups, and roles
-
 AWS stores **multiple versions**, but only **one version is active** at a time.
-
-### When to Use
-
+When to Use
 * Fine-grained permissions
 * Production environments
 * Compliance-driven access control
 * Organization-specific requirements
 
----
-
-## 7. IAM Policy Structure (Core Elements)
-
+7. IAM Policy Structure (Core Elements)
 Every IAM policy contains the following key components.
-
----
-
-### 7.1 Service (Action Namespace)
-
+7.1 Service (Action Namespace)
 This defines **which AWS service the policy applies to**.
-
 Examples:
-
 * `s3` → Amazon S3
 * `ec2` → Amazon EC2
 * `rds` → Amazon RDS
-
 Multiple services can be included in the same policy.
-
----
-
-### 7.2 Effect
-
+7.2 Effect
 Defines **whether the action is allowed or denied**.
-
 Possible values:
-
 * `Allow`
 * `Deny`
-
 Important rule:
-
 * **Explicit Deny always overrides Allow**
-
----
-
-### 7.3 Action
-
+7.3 Action
 Specifies **what operations are permitted or denied**.
-
 Examples:
-
 * S3:
-
   * `s3:GetObject`
   * `s3:PutObject`
   * `s3:DeleteObject`
 * EC2:
-
   * `ec2:StartInstances`
   * `ec2:StopInstances`
   * `ec2:DescribeInstances`
-
 Wildcard (`*`) can be used to allow all actions for a service.
-
----
-
-### 7.4 Resource
-
+7.4 Resource
 Defines **which AWS resources the policy applies to**.
-
 Examples:
-
 * Specific S3 bucket
 * Specific EC2 instance
 * All resources using `*`
-
 Using `*` means:
-
 * Permission applies to **all resources of that service**
 
----
-
-## 8. Policy Evaluation Logic (Very Important)
-
+8. Policy Evaluation Logic (Very Important)
 When a request is made, AWS evaluates permissions in this order:
-
 1. Explicit Deny
 2. Explicit Allow
 3. Default Deny (if nothing matches)
-
 If no policy allows the action → **access is denied by default**.
 
----
-
-## 9. Requirement Scenario (Custom Policy)
-
-### Requirement
-
+9. Requirement Scenario (Custom Policy)
+Requirement
 Create a **custom IAM policy** that allows a user to access:
-
 * Amazon S3
 * Amazon EC2
-
-### Access Level
-
+Access Level
 * Allow actions on both services
 * No restriction on specific resources
-
 This requirement is typically used for:
-
 * Training accounts
 * Lab environments
 * Limited admin users
 
----
-
-## 10. Custom IAM Policy – S3 + EC2 Access
-
-### Sample Customer Managed Policy (JSON)
+10. Custom IAM Policy – S3 + EC2 Access
+Sample Customer Managed Policy (JSON)
 
 ```json
 {
@@ -258,29 +159,18 @@ This requirement is typically used for:
 
 ---
 
-## 11. Explanation of the Policy
-
-### Service
-
+11. Explanation of the Policy
+Service
 * Targets **Amazon S3** and **Amazon EC2**
-
-### Effect
-
+Effect
 * `Allow` → Permissions are granted
-
-### Action
-
+Action
 * `s3:*` → All S3 operations
 * `ec2:*` → All EC2 operations
-
-### Resource
-
+Resource
 * `*` → Applies to all buckets and instances
 
----
-
-## 12. Important Notes (Teaching & Production)
-
+12. Important Notes (Teaching & Production)
 * This policy gives **broad access**
 * Not recommended for production users
 * Useful for:
@@ -290,15 +180,12 @@ This requirement is typically used for:
   * Temporary admin access
 
 For production:
-
 * Restrict actions
 * Restrict resources
 * Use conditions
 * Prefer roles over users
 
----
-
-## 13. Comparison Summary
+13. Comparison Summary
 
 | Policy Type      | Editable | AWS Maintained | Best Use Case        |
 | ---------------- | -------- | -------------- | -------------------- |
@@ -306,10 +193,7 @@ For production:
 | Job Function     | ❌        | ✅              | Role-based access    |
 | Customer Managed | ✅        | ❌              | Fine-grained control |
 
----
-
-## 14. Best Practices
-
+14. Best Practices
 * Avoid using `*` in production
 * Use customer managed policies for control
 * Attach policies to groups, not users
@@ -317,14 +201,9 @@ For production:
 * Test policies using IAM Policy Simulator
 * Always follow least privilege
 
----
-
-## 15. Final Summary
-
+15. Final Summary
 IAM policies are the **foundation of AWS security**.
-
 Understanding:
-
 * Policy types
 * JSON structure
 * Evaluation logic
