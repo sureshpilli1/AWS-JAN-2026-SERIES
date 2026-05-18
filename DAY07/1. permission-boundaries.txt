@@ -1,148 +1,87 @@
-# IAM Permissions Boundary – In-Depth Documentation
-
+IAM Permissions Boundary – In-Depth Documentation
 AWS Identity and Access Management supports **Permissions Boundaries** to control **how much permission an IAM identity can ever have**, even if more permissions are granted later.
-
 A permissions boundary acts as a **maximum permission limit**, not a grant.
 
----
-
-## 1. What Is a Permissions Boundary (Core Concept)
-
+1. What Is a Permissions Boundary (Core Concept)
 A **permissions boundary** is a **managed policy** that defines the **upper limit of permissions** for:
-
 * IAM users
 * IAM roles
-
 It answers this question:
-
 > “What is the maximum this user or role is allowed to do?”
-
 Even if additional permissions are attached, **actions outside the boundary are always blocked**.
 
----
-
-## 2. What a Permissions Boundary Is NOT
-
+2. What a Permissions Boundary Is NOT
 To avoid confusion, permissions boundary:
-
 * ❌ Does NOT grant permissions by itself
 * ❌ Does NOT apply to IAM groups
 * ❌ Does NOT apply to the AWS root user
 * ❌ Does NOT override explicit Deny
 * ❌ Does NOT replace SCPs
-
 It only **limits what Allow policies can do**.
 
----
-
-## 3. How AWS Evaluates Permissions With Boundary (Very Important)
-
+3. How AWS Evaluates Permissions With Boundary (Very Important)
 AWS evaluates permissions in this order:
-
 1. **Explicit Deny** (anywhere) → DENY
 2. **SCPs** (if in Organizations) → LIMIT
 3. **Permissions Boundary** → LIMIT
 4. **Identity-based policies** → ALLOW
 5. **Implicit Deny** → DENY
-
 Final rule:
-
 > An action is allowed **only if it is allowed by BOTH**
 > the identity policy **AND** the permissions boundary.
 
----
-
-## 4. Visual Way to Understand (Concept)
-
+4. Visual Way to Understand (Concept)
 Think of three layers:
-
 * Identity Policy → “What access is given”
 * Permissions Boundary → “Maximum allowed”
 * SCP → “Organization-level ceiling”
-
 If any layer blocks → access is denied.
 
----
-
-## 5. Simple Example (Conceptual)
-
+5. Simple Example (Conceptual)
 * User has `AdministratorAccess`
 * Permissions boundary allows only:
-
   * EC2
   * S3 read-only
-
 Result:
-
 * User appears admin
 * But can **only use EC2 and S3 read**
 * IAM, RDS, Lambda → denied
 
----
-
-## 6. Why Permissions Boundaries Exist
-
+6. Why Permissions Boundaries Exist
 AWS introduced permissions boundaries to:
-
 * Prevent privilege escalation
 * Safely delegate IAM user creation
 * Enforce least privilege
 * Protect accounts from accidental admin access
-
 Very common in:
-
 * Large organizations
 * Dev / QA / sandbox accounts
 * Delegated admin models
 
----
-
-## 7. Where Permissions Boundaries Are Used (Real Use Cases)
-
-### A) Developer Self-Service Model
-
+7. Where Permissions Boundaries Are Used (Real Use Cases)
+A) Developer Self-Service Model
 Developers:
-
 * Can create IAM roles
 * Can attach policies
 * But cannot exceed boundary limits
-
 Boundary ensures:
-
 * No admin access
 * No IAM modification
 * No billing access
-
----
-
-### B) CI/CD Role Control
-
+B) CI/CD Role Control
 CI/CD role:
-
 * Needs EC2, ECR, ECS
 * Must never touch IAM
-
 Boundary:
-
 * Allows only deployment-related services
 * Blocks IAM completely
-
----
-
-### C) Prevent Accidental Admin Access
-
+C) Prevent Accidental Admin Access
 Even if someone attaches:
-
 * `AdministratorAccess`
-
 Boundary ensures:
-
 * Only approved services are accessible
 
----
-
-## 8. Permissions Boundary Policy Example (Concept)
-
+8. Permissions Boundary Policy Example (Concept)
 Boundary policy (maximum allowed):
 
 ```json
@@ -162,41 +101,24 @@ Boundary policy (maximum allowed):
 ```
 
 This boundary:
-
 * Allows EC2 full
 * Allows S3 read only
 * Blocks everything else forever
 
----
-
-## 9. Important Rules and Limits
-
-### Boundary Type
-
+9. Important Rules and Limits
+Boundary Type
 * Must be a **managed policy**
 * Inline policies ❌ not allowed
-
----
-
-### Attachment
-
+Attachment
 * One boundary per user or role
 * Boundary can be changed or removed (if permitted)
-
----
-
-### Size and Version Limits
-
+Size and Version Limits
 Boundary follows **managed policy limits**:
-
 * Size: **6,144 characters**
 * Versions: **5**
 * Attachments: Unlimited
 
----
-
-## 10. Permissions Boundary vs SCP (Clear Difference)
-
+10. Permissions Boundary vs SCP (Clear Difference)
 | Feature               | Permissions Boundary | SCP          |
 | --------------------- | -------------------- | ------------ |
 | Scope                 | User / Role          | Account / OU |
@@ -205,10 +127,7 @@ Boundary follows **managed policy limits**:
 | Restricts permissions | Yes                  | Yes          |
 | Root user affected    | No                   | Yes          |
 
----
-
-## 11. Permissions Boundary vs Inline Policy
-
+11. Permissions Boundary vs Inline Policy
 | Aspect            | Permissions Boundary  | Inline Policy     |
 | ----------------- | --------------------- | ----------------- |
 | Purpose           | Limit max permissions | Grant permissions |
@@ -216,78 +135,44 @@ Boundary follows **managed policy limits**:
 | Visibility        | Central               | Hidden            |
 | Privilege control | Strong                | Weak              |
 
----
-
-## 12. Very Common Misunderstandings
-
-### “Boundary allows access”
-
+12. Very Common Misunderstandings
+“Boundary allows access”
 ❌ Incorrect
 Boundary only defines **what is allowed at maximum**
-
----
-
-### “Admin policy bypasses boundary”
-
+“Admin policy bypasses boundary”
 ❌ Incorrect
 Boundary always limits admin
-
----
-
-### “Boundary applies to groups”
-
+“Boundary applies to groups”
 ❌ Incorrect
 Only users and roles
-
----
-
-### “Boundary replaces SCP”
-
+“Boundary replaces SCP”
 ❌ Incorrect
 They work together
 
----
-
-## 13. Permissions Boundary + IP/MFA Conditions
-
+13. Permissions Boundary + IP/MFA Conditions
 Boundaries can include conditions:
-
 * IP restrictions
 * MFA enforcement
 * Time-based access
-
 This makes them very powerful when combined with identity policies.
 
----
-
-## 14. When NOT to Use Permissions Boundary
-
+14. When NOT to Use Permissions Boundary
 * Small single-admin accounts
 * Simple learning labs
 * Accounts without delegated IAM control
-
 They add complexity if not required.
 
----
-
-## 15. Best Practices
-
+15. Best Practices
 * Create **standard boundary policies**
 * Apply boundary during user/role creation
 * Prevent boundary removal via SCP
 * Use boundaries for developers and automation
 * Audit boundary usage regularly
 
----
-
-## 16. One Clear  Statement
-
+16. One Clear  Statement
 > “A permissions boundary defines the maximum permissions an IAM user or role can ever have, regardless of what other policies are attached.”
 
----
-
-## 17. Summary (High-Level)
-
+17. Summary (High-Level)
 * Permissions boundaries **limit**, not grant
 * Admin access cannot bypass them
 * They prevent privilege escalation
