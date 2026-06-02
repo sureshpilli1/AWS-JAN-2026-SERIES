@@ -1,6 +1,8 @@
 1. Introduction to Amazon EC2 (Elastic Compute Cloud)
 What is EC2?
-Amazon EC2 (Elastic Compute Cloud) is a web service provided by AWS that allows users to launch and manage virtual servers (known as EC2 instances) on demand. EC2 provides scalable computing capacity in the AWS cloud and eliminates the need to invest in hardware upfront. This enables users to develop and deploy applications faster and more cost-effectively.
+Amazon EC2 (Elastic Compute Cloud) is a web service provided by AWS that allows users to launch and manage virtual servers (known as EC2 instances) on demand. 
+EC2 provides scalable computing capacity in the AWS cloud and eliminates the need to invest in hardware upfront. 
+This enables users to develop and deploy applications faster and more cost-effectively.
 Core Features
 * **Elasticity**: Automatically scale up and down according to your needs.
 * **Customizable**: Choose your operating system, instance type, storage options, and networking configurations.
