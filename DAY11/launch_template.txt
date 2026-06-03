@@ -1,0 +1,95 @@
+EC2 Launch Templates – Detailed Guide
+What is a Launch Template?
+An EC2 Launch Template is a reusable configuration that defines how to launch EC2 instances. Instead of manually selecting instance settings every time you launch, you can pre-define:
+AMI ID
+Instance type
+Key pair
+Network settings
+Storage configuration
+User data (e.g., for Apache installation)
+Security groups
+IAM roles
+
+Launch templates are commonly used with:
+Auto Scaling Groups
+Spot Fleets
+Manual launches with consistent settings
+Dev/test environments needing repeatable deployments
+
+Benefits of Using Launch Templates
+Reusability: Reuse the same config for multiple launches.
+Consistency: Avoid configuration errors during instance launch.
+Version Control: You can maintain multiple versions of a launch template.
+Auto Scaling Integration: Required for Auto Scaling Groups and EC2 Fleet.
+Supports User Data: Useful for automation and bootstrapping software.
+
+Create a Launch Template – Step-by-Step (Ubuntu + Apache Example)
+Step 1: Open EC2 Console
+Navigate to: https://console.aws.amazon.com/ec2/
+In the left menu, click Launch Templates
+Click Create launch template
+Step 2: Fill in Template Details
+Launch Template Name: ubuntu-apache-template
+Template Version Description: v1 – Ubuntu with Apache
+Amazon Machine Image (AMI): Choose Ubuntu Server 22.04 LTS
+Instance Type: t2.micro (Free Tier eligible)
+Key Pair: Select an existing key pair or create one
+Network Settings:
+Select default VPC
+Auto-assign public IP
+Choose appropriate subnet
+Security Groups: Create or select one with:
+Inbound: SSH (22), HTTP (80)
+Step 3: Add User Data (Apache Installation)
+Scroll to Advanced Details and paste the following script in the User data section:
+
+#!/bin/bash
+apt update -y
+apt install apache2 -y
+systemctl enable apache2
+systemctl start apache2
+echo "<h1>Apache Web Server is running on Ubuntu EC2 (via Launch Template)</h1>" > /var/www/html/index.html
+Step 4: Add Storage
+Root volume: 8 GB (gp2 or gp3)
+Optional: Add secondary volumes if needed
+Step 5: Create Template
+Review all settings
+Click Create launch template
+Launching an Instance from a Launch Template
+Go to Launch Templates
+Select your template
+Click Actions → Launch instance from template
+Choose the template version and verify instance settings
+Click Launch Instance
+Access and Verification Steps
+Use SSH to connect:
+
+ssh -i your-key.pem ubuntu@<Public-IP>
+Check Apache status:
+
+sudo systemctl status apache2
+Open browser:
+
+http://<Public-IP>
+You should see the Apache default page or your custom HTML message.
+
+Best Practices for Launch Templates
+Always use descriptive names and version comments
+Use Launch Templates with Auto Scaling Groups for elasticity
+Store all bootstrap logic in User Data scripts
+Keep your security groups lean and auditable
+Version your launch templates when making changes
+Real-World Use Case
+Scenario: You are building a load-balanced web application with Auto Scaling. Instead of configuring Apache on each instance manually:
+
+You define a Launch Template with:
+
+Ubuntu AMI
+Apache installation in User Data
+Security group allowing HTTP/SSH
+Auto-assigned IP and 8GB EBS volume
+Use the template inside an Auto Scaling Group
+
+When traffic spikes, new EC2 instances are launched with Apache pre-installed
+
+This ensures automation, consistency, and zero manual setup for every instance.
