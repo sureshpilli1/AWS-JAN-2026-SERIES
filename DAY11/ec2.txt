@@ -1,356 +1,218 @@
-# Amazon Elastic Compute Cloud Intro + Launching Windows & Linux Instances (Complete Notes)
-
+Amazon Elastic Compute Cloud Intro + Launching Windows & Linux Instances (Complete Notes)
 This document explains **EC2 basics + the full logic behind launching a Windows server and a Linux server** in AWS, using a **production-style mindset** (tags, security, networking, access, and lifecycle).
 It’s written so you can directly use it as GitHub documentation.
 
----
-
-## 1) EC2 Instance = Virtual Server + Core Building Blocks
-
+1) EC2 Instance = Virtual Server + Core Building Blocks
 When you launch an EC2 instance, you’re essentially choosing a bundle of infrastructure components:
-
-### OS Layer
-
+OS Layer
 * OS is provided using an Amazon Machine Image (AMI)
 * AMI is a **ready-made OS template** (Windows/Linux) that AWS can boot quickly (you don’t install OS manually). ([AWS Documentation][1])
-
-### Compute Layer
-
+Compute Layer
 * CPU + RAM come together as an **Instance Type**
 * Example: `t3.micro`, `m5.large`, `c6i.xlarge`
 * Instance type decides compute power, memory, and some networking capability. ([AWS Documentation][1])
-
-### Storage Layer
-
+Storage Layer
 * Primary disk for most instances is Amazon Elastic Block Store (EBS)
 * Root volume contains the OS disk. (You can add extra EBS volumes later.)
-
-### Network Layer
-
+Network Layer
 * Instance gets a virtual network card called Elastic Network Interface (ENI)
 * ENI gives Private IP, optional Public IP, and connects instance to your VPC/subnet.
-
-### Firewall Layer
-
+Firewall Layer
 * Firewall in AWS is mainly controlled using a **Security Group**
 * Typical inbound ports:
-
   * Windows: RDP 3389
   * Linux: SSH 22
 
----
-
-## 2) Step 1 — Add Tags (Mandatory in Real Projects)
-
+2) Step 1 — Add Tags (Mandatory in Real Projects)
 Tags are key-value labels used to identify and manage resources. They help with:
-
 * Searching/filtering
 * Cost tracking
 * Ownership mapping
 * Environment separation (Dev/Test/Prod)
 * Automation (scripts can act based on tags)
-
-### Recommended tags for a training + project demo
-
+Recommended tags for a training + project demo
 * `Name` = `My-Windows-demo`
 * `Project` = `B2B-BSS`
 * `Client` = `jio`
 * `Platform` = `Windows`
-
-
-### Why Tag Editor matters
-
+Why Tag Editor matters
 Tag Editor allows you to filter resources quickly by tags and find “who created what” without confusion.
-
 **Trainer note:** Make it a rule: *No resource without tags.*
 
----
-
-## 3) Step 2 — Choose an AMI (Choose OS)
-
-### What AMI really means
-
+3) Step 2 — Choose an AMI (Choose OS)
+What AMI really means
 An AMI is a **pre-built OS image** maintained by AWS or vendors:
-
 * Windows Server AMIs (with Microsoft licensing)
 * Linux AMIs (Amazon Linux, Ubuntu, RHEL, etc.)
-
 AWS boots your selected AMI on the instance type you choose. ([AWS Documentation][1])
-
-### What to teach here
-
+What to teach here
 * Windows AMI → RDP access, password decryption flow (key pair is used to decrypt Admin password)
 * Linux AMI → SSH access using private key directly
 
----
-
-## 4) Step 3 — Choose Instance Type (CPU + RAM Bundle)
-
+4) Step 3 — Choose Instance Type (CPU + RAM Bundle)
 Instance types are grouped into families based on workload needs. AWS documents these families and how they are categorized. ([AWS Documentation][1])
-
-### A) General Purpose (balanced)
-
+A) General Purpose (balanced)
 Use for:
-
 * Web apps
 * Small/medium services
 * Dev/Test
 * General workloads
-
 Common families:
-
 * `t` (burstable) — training & low-cost labs
 * `m` (balanced) — stable production web/app
-
 Examples:
-
 * `t3.micro` (cheap labs)
 * `m5.large` (balanced workloads)
-
-### B) Compute Optimized (CPU heavy)
-
+B) Compute Optimized (CPU heavy)
 Use for:
-
 * HPC
 * batch processing
 * CPU-intensive microservices
 * build servers
-
 Common families:
-
 * `c` (example: `c5`, `c6`)
-
 Example:
-
 * `c6i.xlarge`
-
-### C) Memory Optimized (RAM heavy)
-
+C) Memory Optimized (RAM heavy)
 Use for:
-
 * in-memory caching
 * memory-heavy DB engines
 * analytics that needs high RAM
-
 Common families:
-
 * `r` (example: `r5`, `r6)
 * `x` (specialized high memory)
-
-### D) Storage Optimized (high IOPS / storage performance)
-
+D) Storage Optimized (high IOPS / storage performance)
 Use for:
-
 * heavy disk workloads
 * log processing
 * distributed databases / graph workloads
-
 Common families:
-
 * `i`, `d` (varies by generation)
-
-### E) GPU / Accelerated Computing
-
+E) GPU / Accelerated Computing
 Use for:
-
 * ML training/inference
 * graphics rendering
 * gaming/streaming
-
 Common families:
-
 * `g`, `p`, `f`
-
 **Trainer best practice:**
 Teach selection logic as: **Workload → CPU/RAM/IOPS/GPU need → family → size**
 
----
-
-## 5) Step 4 — Choose Key Pair (Secure Authentication)
-
+5) Step 4 — Choose Key Pair (Secure Authentication)
 A key pair is a set of credentials made of:
-
 * **Public key** (stored by AWS / placed on the instance)
 * **Private key** (downloaded and stored by you)
-
 AWS confirms:
-
 * Public key is stored in EC2
 * You keep the private key safely
 * Linux uses private key for SSH
 * Windows uses private key to decrypt the Administrator password ([AWS Documentation][2])
-
-### Key pair rules to teach
-
+Key pair rules to teach
 * If private key is lost, you generally **cannot** SSH/RDP the same way again (recovery requires alternate methods)
 * Never upload private key to GitHub
 * Store `.pem` securely
 
----
-
-## 6) Step 5 — Network Settings (VPC + Subnet + Security Group)
-
-### A) Ports to open (based on OS)
-
+6) Step 5 — Network Settings (VPC + Subnet + Security Group)
+A) Ports to open (based on OS)
 * **Windows (RDP)**: TCP `3389`
 * **Linux (SSH)**: TCP `22`
-
-### B) Source rule best practice
-
+B) Source rule best practice
 Do **not** open to the world unless it’s a lab and you understand the risk.
-
 Recommended:
-
 * `My IP` (safest for training)
 * or `Custom` with your office public IP `/32`
-
 Only use `Anywhere (0.0.0.0/0)` for temporary demos and remove it after testing.
-
-### C) Public access requirements
-
+C) Public access requirements
 To connect from your laptop:
-
 * Instance must be in a public subnet (or have proper routing)
 * Security group must allow inbound RDP/SSH
 * Instance must have a reachable public endpoint (public IP or via a bastion/VPN/SSM)
 
----
-
-## 7) Step 6 — Storage (Root Volume + Optional Disks)
-
-### Root Volume
-
+7) Step 6 — Storage (Root Volume + Optional Disks)
+Root Volume
 * The root volume is the disk that contains OS (Windows/Linux).
 * Default is fine for initial demos.
-
-### Important lifecycle concept (Data safety)
-
+Important lifecycle concept (Data safety)
 When an instance is terminated:
-
 * Instance is permanently removed
 * EBS volumes may be deleted or preserved depending on **DeleteOnTermination** setting ([AWS Documentation][3])
-
 **Trainer line:**
 “Stopping keeps instance disk; terminating may delete disk depending on settings.”
 
----
-
-## 8) Connecting to a Windows EC2 Instance (RDP)
-
+8) Connecting to a Windows EC2 Instance (RDP)
 AWS standard method:
-
 * Connect via **Remote Desktop** to Windows instances. ([AWS Documentation][4])
-
-### What you need
-
+What you need
 * Public IP / public DNS of instance
 * RDP allowed in security group (3389)
 * Administrator password (decrypted using key pair)
-
-### Windows laptop (RDP built-in)
-
+Windows laptop (RDP built-in)
 * Open **Run**
 * Type `mstsc`
 * Enter Public IP / DNS of the instance
 * Use `Administrator` + decrypted password
-
-### macOS
-
+macOS
 * Install Microsoft Remote Desktop / Windows App (client)
 * Connect using public IP/DNS + credentials
 
----
-
-## 9) Connecting to a Linux EC2 Instance (SSH)
-
-### What you need
-
+9) Connecting to a Linux EC2 Instance (SSH)
+What you need
 * `.pem` private key
 * SSH allowed in security group (22)
 * Public IP / public DNS
 * Correct username (depends on AMI)
-
 Common usernames:
-
 * Amazon Linux: `ec2-user`
 * Ubuntu: `ubuntu`
-
-### Example SSH command
+Example SSH command
 
 ```bash
 chmod 400 mykey.pem
 ssh -i mykey.pem ec2-user@<PUBLIC_IP>
 ```
 
----
-
-## 10) Public IP vs Private IP (Must-Explain Concept)
-
-### Public IP
-
+10) Public IP vs Private IP (Must-Explain Concept)
+Public IP
 * Globally routable on the internet
 * Used when connecting from your laptop directly
 * Can change when instance is stopped/started (unless you use a static IP solution)
-
-### Private IP
-
+Private IP
 * Works only inside the VPC network
 * Used for internal communication:
-
   * app → db
   * microservices → microservices
 * Not reachable directly from the internet
-
 **Trainer example:**
 “DB should be private IP only; application talks to DB privately.”
 
----
-
-## 11) Stop vs Terminate (Real Project Behavior)
-
-### Stop
-
+11) Stop vs Terminate (Real Project Behavior)
+Stop
 * Instance shuts down
 * You can start it again
 * OS disk (EBS) generally remains, so data stays
 * Compute charges stop; storage charges continue (EBS) ([AWS Documentation][5])
-
-### Terminate
-
+Terminate
 * Permanent delete of instance
 * Cannot recover the instance
 * Root volume may be deleted (default often deletes root volume) unless configured otherwise ([AWS Documentation][3])
-
 **Trainer rule for students:**
-
 * Stop = “pause”
 * Terminate = “delete completely”
 
----
-
-## 12) Best Practices to Add (Make Your Notes Stronger)
-
-### Security
-
+12) Best Practices to Add (Make Your Notes Stronger)
+Security
 * Use `My IP` for SSH/RDP, not `Anywhere`
 * Use separate security groups for Windows and Linux
 * Don’t use root user for EC2 operations
-
-### Cost
-
+Cost
 * Stop instances after demo
 * Delete unused EBS volumes and snapshots
 * Use tagging for cost tracking
-
-### Operations
-
+Operations
 * Keep Windows password retrieval steps documented
 * Use naming standards (`Name`, `Project`, `Env`, `Owner`, `CostCenter`)
 
----
-
-## 13) Quick  Flow 
-
+13) Quick  Flow 
 1. EC2 building blocks (AMI, instance type, EBS, ENI, SG)
 2. Tags (why mandatory)
 3. Windows launch (RDP path)
