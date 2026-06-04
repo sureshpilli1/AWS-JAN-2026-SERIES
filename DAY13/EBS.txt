@@ -403,9 +403,7 @@ explaination by chatgpt:
 -----------------------
 
 NVMe stands for Non-Volatile Memory Express.
-
 It’s a modern storage protocol designed specifically for fast storage devices like SSDs (Solid State Drives). Here’s what that means in simple terms:
-
 Non-Volatile Memory → The storage keeps data even when power is off (like SSDs or hard drives).
 Express → It’s built for high-speed communication with the computer.
 
@@ -455,3 +453,146 @@ Even if you attached the volume as:
 the OS may rename it to:
 /dev/nvme1n1
 This confuses many beginners.
+
+
+
+| Term        | Meaning                                   |
+| ----------- | ----------------------------------------- |
+| File System | Structure used to store files/directories |
+| ext4        | Most common Linux filesystem              |
+| mkfs.ext4   | Creates ext4 filesystem                   |
+| UUID        | Unique ID assigned to filesystem          |
+| blkid       | Shows UUID                                |
+| fstab       | Uses UUID for persistent mounts           |
+
+Disk = Empty land
+ext4 = Building structure
+UUID = Building registration number
+
+
+
+
+
+What is /etc/fstab?
+/etc/fstab = File System Table used for automatic mounting during boot
+fstab stands for:
+File System Table
+It is a configuration file in Linux that tells the operating system:
+Which filesystems/disks should be mounted automatically during boot.
+🔹 Location
+/etc/fstab
+Why do we need it?
+Suppose you attached an EBS volume:
+/dev/xvdf
+and mounted it manually:
+sudo mount /dev/xvdf /mnt/data
+It works.
+Problem
+After reboot:
+sudo reboot
+the mount disappears.
+Why?
+Because Linux forgets manual mounts after restart.
+Solution: /etc/fstab
+Add an entry in:
+/etc/fstab
+Now Linux automatically mounts the disk during boot.
+🔹 Example Entry
+UUID=a1b2c3d4-e5f6-7890-abcd-1234567890ef /mnt/data ext4 defaults,nofail 0 2
+Meaning of each column
+UUID=xxxx   /mnt/data   ext4   defaults,nofail   0   2
+Column	Meaning
+UUID=xxxx	Filesystem to mount
+/mnt/data	Mount point
+ext4	Filesystem type
+defaults,nofail	Mount options
+0	Dump backup option
+2	Filesystem check order
+Detailed breakdown
+1. UUID
+UUID=a1b2c3d4...
+Identifies the filesystem.
+Preferred over:
+/dev/xvdf
+because device names may change.
+2. Mount Point
+/mnt/data
+Where the filesystem appears in Linux.
+3. Filesystem Type
+ext4
+Could also be:
+xfs
+ext3
+nfs
+4. Mount Options
+defaults
+Common options:
+read/write
+allow execution
+allow normal access
+nofail
+nofail
+means:
+If disk missing, continue booting
+Without nofail:
+System may fail to boot
+5. Dump Field
+0
+Used by old backup utility dump.
+Usually:
+0
+6. fsck Order
+2
+Controls filesystem check order during boot.
+Common values:
+Value	Meaning
+0	Don't check
+1	Root filesystem
+2	Other filesystems
+How to edit fstab
+Open file:
+sudo vi /etc/fstab
+or
+sudo nano /etc/fstab
+Example
+UUID=7d31a4f0-11b2-4e45-9a1d-abcdef123456 /mnt/data ext4 defaults,nofail 0 2
+Test before reboot
+Very important.
+After editing:
+sudo mount -a
+What does it do?
+Reads:
+/etc/fstab
+and tries mounting everything.
+If no errors
+Configuration is good ✔
+Why DevOps engineers use fstab
+Common use cases:
+EBS volumes
+NFS mounts
+Shared storage
+Application data disks
+Real AWS Example
+EBS attached
+/dev/xvdf
+Formatted
+mkfs.ext4 /dev/xvdf
+UUID found
+blkid
+Output:
+UUID=1234-abcd
+Added to fstab
+UUID=1234-abcd /mnt/data ext4 defaults,nofail 0 2
+Result
+After reboot:
+/mnt/data
+is automatically mounted.
+One-line memory
+/etc/fstab = File System Table used for automatic mounting during boot
+Final summary
+fstab (File System Table) is a Linux configuration file that tells the system:
+what filesystem to mount
+where to mount it
+how to mount it
+when to check it
+Most commonly used to ensure disks (like EBS volumes) are automatically mounted after reboot.
