@@ -608,3 +608,148 @@ sudo mkfs -t ext4 /dev/xvdf
 | -t        | Filesystem type           |
 | ext4      | Create an ext4 filesystem |
 | /dev/xvdf | Disk/device to format     |
+
+
+
+What is Block-Level Storage?
+To understand block-level storage, first imagine a hard disk.
+A disk is divided into many small pieces called: Blocks
+
+| Storage Type   | What You Get               |
+| -------------- | -------------------------- |
+| Block Storage  | Raw disk (`/dev/xvdf`)     |
+| File Storage   | Shared files/directories   |
+| Object Storage | Objects (e.g., S3 objects) |
+
+Block-level storage
+
+What is a Block?
+A block is a fixed-size chunk of storage.
+Example:
+4 KB
+8 KB
+16 KB
+depending on filesystem/storage.
+Example
+Suppose a file is:
+10 KB
+Linux may store it as:
+Block 101
+Block 102
+Block 103
+The filesystem keeps track of which blocks belong to the file.
+What is Block-Level Storage Service?
+A block storage service provides:
+Raw storage blocks to a server.
+The storage service does NOT care about:
+files
+folders
+filenames
+It only provides blocks.
+Example: Amazon EBS
+Amazon Elastic Block Store (EBS) is a block-level storage service.
+AWS gives you
+10 GB volume
+To Linux it appears as:
+/dev/xvdf
+or
+/dev/nvme1n1
+At this point:
+No files
+No folders
+No filesystem
+Just raw blocks.
+Then YOU create filesystem
+Example:
+mkfs.ext4 /dev/xvdf
+Now Linux can store:
+Files
+Directories
+Permissions
+
+Why is it called Block Storage?
+Because storage is provided as:
+Blocks
+not as files.
+Compare Storage Types
+1. Block Storage
+Examples:
+EBS
+SAN storage
+Server sees:
+/dev/xvdf
+You create filesystem.
+2. File Storage
+Examples:
+NFS
+EFS
+Server sees:
+/shared-data
+Files already available.
+3. Object Storage
+Examples:
+S3
+Data stored as:
+Objects
+Not mounted like disks.
+Visual comparison
+Block Storage
+Storage
+  ↓
+Raw blocks
+  ↓
+Filesystem
+  ↓
+Files
+File Storage
+Storage
+  ↓
+Files directly
+Object Storage
+Storage
+  ↓
+Objects
+Why databases like block storage?
+Databases need:
+Fast access
+Low latency
+Direct disk control
+Examples:
+MySQL
+PostgreSQL
+MongoDB
+work very well with block storage.
+🔹 EBS example
+Create EBS volume
+20 GB
+Attach to EC2.
+Linux sees:
+/dev/xvdf
+Format
+mkfs.ext4 /dev/xvdf
+Mount
+mount /dev/xvdf /mnt/data
+Now application stores data.
+🔥 Why DevOps engineers care?
+In Kubernetes:
+EBS volumes → PV/PVC
+Database storage
+StatefulSets
+all commonly use block storage.
+🔹 One-line memory
+Block storage provides raw disk blocks to a server
+The operating system then creates:
+filesystem
+directories
+files
+on top of those blocks.
+🔚 Final summary
+Storage Type	What You Get
+Block Storage	Raw disk (/dev/xvdf)
+File Storage	Shared files/directories
+Object Storage	Objects (e.g., S3 objects)
+For EBS:
+EBS → Block Storage
+ext4 → Filesystem
+Files → Stored inside filesystem
+That's why EBS is called a block-level storage service: it gives your server a raw virtual disk made up of storage blocks.
