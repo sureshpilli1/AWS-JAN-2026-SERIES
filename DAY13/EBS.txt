@@ -596,3 +596,15 @@ where to mount it
 how to mount it
 when to check it
 Most commonly used to ensure disks (like EBS volumes) are automatically mounted after reboot.
+
+
+
+
+sudo mkfs -t ext4 /dev/xvdf
+
+| Part      | Meaning                   |
+| --------- | ------------------------- |
+| mkfs      | Make filesystem           |
+| -t        | Filesystem type           |
+| ext4      | Create an ext4 filesystem |
+| /dev/xvdf | Disk/device to format     |
