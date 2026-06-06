@@ -1,8 +1,11 @@
 Server Upgrade Change Request (CRQ) – Real-Time DevOps Approach
+
 Change Title
 EC2 Instance Type Upgrade from t3.micro to t3.small
+
 Objective of the Change
 To improve application performance and handle increased workload by upgrading the EC2 instance type from **t3.micro** to **t3.small**.
+
 Reason for Change
 * CPU and memory utilization is consistently high
 * Application response time is slow during peak hours
@@ -66,6 +69,7 @@ systemctl status httpd
 systemctl status tomcat
 * Verify application URL is accessible
 * Check logs for errors
+
 Rollback Plan
 If any issue occurs after upgrade:
 1. Stop the EC2 instance
