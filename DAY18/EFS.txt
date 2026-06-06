@@ -3,7 +3,9 @@ This guide explains how to configure Amazon Elastic File System (EFS) to be used
 The goal is to serve the same web content from both instances using EFS.
 
 What is Amazon EFS?
-Amazon Elastic File System (EFS) is a fully managed, scalable, and elastic NFS (Network File System) that can be mounted simultaneously on multiple EC2 instances. It provides shared access to data with high availability and durability across multiple Availability Zones (AZs). EFS is ideal for scenarios that require a centralized file store accessible from multiple compute resources.
+Amazon Elastic File System (EFS) is a fully managed, scalable, and elastic NFS (Network File System) that can be mounted simultaneously on multiple EC2 instances.
+It provides shared access to data with high availability and durability across multiple Availability Zones (AZs).
+EFS is ideal for scenarios that require a centralized file store accessible from multiple compute resources.
 
 Key Features:
 * Supports NFSv4 protocol
