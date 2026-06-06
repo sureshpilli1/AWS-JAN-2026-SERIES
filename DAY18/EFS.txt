@@ -85,3 +85,45 @@ Summary
 | Mount Path      | `/var/www/html`                        |
 
 This approach allows dynamic web content to be shared between multiple instances without manual sync or duplication of data.
+
+
+
+expalination by chatgpt:
+mount -t efs -o tls fs-0f6ae9ddbe0eeb2b5:/ /var/www/html
+| Part                   | Meaning                             |
+| ---------------------- | ----------------------------------- |
+| mount                  | Linux command to mount a filesystem |
+| -t efs                 | Filesystem type is EFS              |
+| -o tls                 | Mount options (use TLS encryption)  |
+| fs-0f6ae9ddbe0eeb2b5:/ | EFS filesystem to mount             |
+| /var/www/html          | Mount point on local machine        |
+
+TLS stands for:
+Transport Layer Security
+It encrypts data traveling between:
+EC2 Instance
+      ⇅
+Amazon EFS
+
+
+
+
+different file systems types:
+-----------------------------
+| Use Case               | Recommended Filesystem |
+| ---------------------- | ---------------------- |
+| Linux root disk        | ext4                   |
+| AWS EBS volume         | ext4 or xfs            |
+| Large database storage | xfs                    |
+| Shared storage         | NFS / EFS              |
+| USB drive              | exFAT                  |
+| Temporary RAM storage  | tmpfs                  |
+
+Easy Memory Trick
+ext4  → Normal Linux disk
+xfs   → Large/high-performance disk
+nfs   → Shared storage
+efs   → AWS managed NFS
+tmpfs → RAM-based storage
+ntfs  → Windows disk
+exfat → USB drives
