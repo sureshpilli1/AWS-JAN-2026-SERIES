@@ -1,154 +1,87 @@
-# Server Upgrade Change Request (CRQ) – Real-Time DevOps Approach
-
-## Change Title
-
+Server Upgrade Change Request (CRQ) – Real-Time DevOps Approach
+Change Title
 EC2 Instance Type Upgrade from t3.micro to t3.small
-
----
-
-## Objective of the Change
-
+Objective of the Change
 To improve application performance and handle increased workload by upgrading the EC2 instance type from **t3.micro** to **t3.small**.
-
----
-
-## Reason for Change
-
+Reason for Change
 * CPU and memory utilization is consistently high
 * Application response time is slow during peak hours
 * Current instance size is insufficient for production traffic
 
----
-
-## Change Type
-
+Change Type
 Planned Change (Low Risk)
 
----
-
-## Change Window
-
+Change Window
 * Planned Date: Weekend
 * Time: Saturday Morning – 04:00 AM IST
 * Duration: Approximately 1 hour
 
----
-
-## Client Impact
-
+Client Impact
 * Client Facing: No
 * End User Impact: Minimal
 * Expected Downtime: Yes (During stop/start activity)
 
----
-
-## Approvals Required
-
+Approvals Required
 * Client Approval: Not Required
 * Budget Approval: Required (Minimal cost increase)
 
----
-
-## Teams Involved
-
+Teams Involved
 * Production Support
 * Application Team
 * Database Team
 * Cloud / AWS Team
 
----
-
-## Pre-Change Activities (Pre-CRQ Steps)
-
+Pre-Change Activities (Pre-CRQ Steps)
 1. Take AMI backup of the EC2 instance
 2. Take EBS volume snapshot
 3. Notify all stakeholders about downtime
 4. Ensure rollback plan is documented
 5. Validate monitoring and alarms
 
----
-
-## Change Implementation Plan (How to Upgrade the Server)
-
-### Step 1: Stop the EC2 Instance
-
+Change Implementation Plan (How to Upgrade the Server)
+Step 1: Stop the EC2 Instance
 * Login to AWS Console
 * Go to EC2 → Instances
 * Select the instance
 * Click **Stop Instance**
-
 Reason: Instance type cannot be changed while running.
-
----
-
-### Step 2: Modify Instance Type
-
+Step 2: Modify Instance Type
 * After instance is in stopped state
 * Click **Actions → Instance settings → Change instance type**
 * Select **t3.small**
 * Save changes
-
----
-
-### Step 3: Start the EC2 Instance
-
+Step 3: Start the EC2 Instance
 * Click **Start Instance**
 * Wait until instance status becomes **Running**
 * Verify system status checks (2/2 passed)
-
----
-
-### Step 4: Post-Upgrade Validation
-
+Step 4: Post-Upgrade Validation
 * Login to server using SSH
 * Check system resources:
-
-```
 free -m
 nproc
 top
 uptime
-```
-
 * Verify application services:
-
-```
 systemctl status httpd
 systemctl status tomcat
-```
-
 * Verify application URL is accessible
 * Check logs for errors
-
----
-
-## Rollback Plan
-
+Rollback Plan
 If any issue occurs after upgrade:
-
 1. Stop the EC2 instance
 2. Change instance type back to **t3.micro**
 3. Start the instance
 4. Restore from AMI or snapshot if required
-
----
-
-## Post-Change Validation Responsibility
-
+Post-Change Validation Responsibility
 * Production Support Team
 * Application Team
 * AWS / Cloud Team
 
----
-
-## Change Status
-
+Change Status
 * Change Implemented Successfully
 * No post-change issues observed
-
----
-
-## Interview / Classroom Explanation (How to Say)
-
-> In our production environment, we observed performance issues due to low instance capacity. After CAB approval, we planned a weekend maintenance window, took backups, stopped the instance, upgraded it from t3.micro to t3.small, validated the application, and kept a rollback plan ready. The change was successful with minimal downtime.
+Interview / Classroom Explanation (How to Say)
+> In our production environment, we observed performance issues due to low instance capacity. 
+After CAB approval, we planned a weekend maintenance window, took backups, stopped the instance, upgraded it from t3.micro to t3.small, validated the application, and kept a rollback plan ready. 
+The change was successful with minimal downtime.
 
