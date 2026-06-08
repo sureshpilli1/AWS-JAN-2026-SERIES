@@ -163,3 +163,193 @@ Yes
 What happens if shutdown behavior is set to terminate?
 Instance will be permanently deleted.
 
+
+
+
+explaination by chatgpt:
+------------------------
+
+1. Disk Read Operation
+
+A disk read means:
+Reading data from storage (HDD, SSD, EBS volume) into memory.
+Example
+Suppose you have a file:
+/data/users.txt
+When you run:
+cat /data/users.txt
+Linux performs:
+Disk
+  ↓ Read
+Memory
+  ↓
+cat command
+This is a disk read operation.
+
+2. Disk Write Operation
+A disk write means:
+Saving data from memory to disk.
+Example
+echo "Hello" > test.txt
+Linux performs:
+Memory
+  ↓ Write
+Disk
+The file gets stored on the disk.
+Real-world analogy
+Writing notes into a notebook
+Notebook = Disk
+Writing = Disk Write
+Read vs Write
+Operation	Direction
+Read	Disk → Memory
+Write	Memory → Disk
+Example
+Read
+cat report.txt
+Disk → Memory
+Write
+echo "new data" >> report.txt
+Memory → Disk
+How to Monitor Disk Read/Write
+
+3. Disk Space Usage
+Disk space usage means:
+How much storage capacity is being used.
+Suppose your disk is:
+100 GB
+Files consume:
+40 GB
+Then:
+Used = 40 GB
+Free = 60 GB
+Visual
+Disk Size = 100 GB
+
+████████░░░░░░░░░░░░
+
+Used = 40 GB
+Free = 60 GB
+Check Disk Space
+df -h
+Example:
+Filesystem      Size Used Avail Use%
+/dev/xvda1       20G  12G   8G  60%
+Meaning:
+Total = 20 GB
+Used = 12 GB
+Available = 8 GB
+Find Large Directories
+du -sh /var/*
+Example:
+/var/log = 5 GB
+
+4. Memory Usage
+Memory means:
+RAM (Random Access Memory)
+This is where running programs store active data.
+Example
+You start:
+java -jar app.jar
+The application loads into RAM.
+Visual
+CPU
+ │
+ ▼
+RAM
+ │
+ ▼
+Application
+Difference Between Memory and Disk
+| Memory (RAM)         | Disk (SSD/EBS)       |
+| -------------------- | -------------------- |
+| Very fast            | Slower               |
+| Temporary            | Persistent           |
+| Lost after reboot    | Data survives reboot |
+| Used by running apps | Used to store files  |
+
+Example
+Suppose you open a movie.
+Disk
+movie.mp4 stored on SSD
+Memory
+Movie loaded into RAM while playing
+Check Memory Usage
+free -h
+Example:
+Mem: 8Gi
+Used: 3Gi
+Free: 5Gi
+Or:
+top
+or
+htop
+DevOps Example
+Suppose your Spring Boot application runs on EC2.
+Disk Usage
+Application logs = 15 GB
+Check:
+df -h
+Memory Usage
+Java process consuming 4 GB RAM
+Check:
+top
+Disk Read
+Application reading:
+config.properties
+database files
+Disk Write
+Application writing:
+logs
+uploads
+reports
+
+Kubernetes Example
+A Pod has:
+CPU
+Memory
+Storage
+
+Memory
+Application runtime memory.
+Example:
+resources:
+  requests:
+    memory: 512Mi
+
+Disk
+Files stored in:
+PV
+PVC
+EBS
+EFS
+
+Easy Memory Trick
+Disk Read
+  = Take data FROM disk
+Disk Write
+  = Save data TO disk
+Disk Usage
+  = How much storage is occupied
+Memory Usage
+  = How much RAM running programs are using
+
+Complete Picture
+File Stored on Disk
+        │
+        ▼
+   Disk Read
+        │
+        ▼
+      RAM
+        │
+Application Uses Data
+        │
+        ▼
+   Disk Write
+        │
+        ▼
+Save Back to Disk
+
+This flow (Disk → Memory → Application → Disk) is happening continuously on Linux servers, EC2 instances, Docker containers, and Kubernetes Pods.
+
