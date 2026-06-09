@@ -194,9 +194,6 @@ You will receive:
 IAM Event: CreateUser performed on user test-user at time by arn:aws:iam::xxxx:user/admin
 
 
-
----
-
 Real-Time Project Explanation (Interview Style)
 
 "In our production environment, we implemented event-driven monitoring using EventBridge. We configured rules to capture EC2 state changes and IAM user management activities via CloudTrail. Using Input Transformers, we formatted events before sending them to SNS, ensuring readable notifications for operations and security teams. This helped us implement automated monitoring without custom scripts."
