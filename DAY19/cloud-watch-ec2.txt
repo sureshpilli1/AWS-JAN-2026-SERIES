@@ -353,3 +353,161 @@ Save Back to Disk
 
 This flow (Disk → Memory → Application → Disk) is happening continuously on Linux servers, EC2 instances, Docker containers, and Kubernetes Pods.
 
+
+
+
+
+
+
+
+What is SNS in AWS?
+SNS stands for:
+Simple Notification Service
+It is an AWS service used to:
+Send notifications/messages to multiple recipients or applications.
+
+SNS Architecture
+
+Publisher
+    │
+    ▼
+ SNS Topic
+    │
+ ┌──┴────┬─────┐
+ ▼       ▼     ▼
+Email   SMS   Application
+
+What is an SNS Topic?
+A Topic is like a group or channel.
+Example:
+Topic Name:
+ServerAlerts
+Whenever a message is sent to:
+ServerAlerts
+all subscribers receive it.
+
+Real Example
+Topic:
+Production-Alarms
+Subscribers:
+admin@company.com
+devops@company.com
+manager@company.com
+When AWS sends:
+"CPU Utilization > 90%"
+all three receive the notification.
+
+What is Email Notification?
+Email notification means:
+SNS sends the message to an email address.
+Example:
+SNS Topic:
+ServerAlerts
+Subscription:
+Email:
+suresh@example.com
+Message:
+Disk Usage crossed 80%
+SNS sends an email to:
+suresh@example.com
+AWS Monitoring Example
+Suppose you have:
+Amazon CloudWatch
+monitoring an EC2 instance.
+Alarm
+CPU > 80%
+CloudWatch Alarm
+Triggers
+↓
+SNS Topic
+EC2-Alerts
+↓
+Email Subscription
+admin@company.com
+↓
+Email Received
+ALARM:
+CPU Utilization crossed 80%
+Common SNS Subscription Types
+Type	Description
+Email	Sends email
+SMS	Sends text message
+Lambda	Invokes Lambda function
+HTTP/HTTPS	Calls web endpoint
+SQS	Sends message to queue
+Typical DevOps Use Cases
+EC2 Alerts
+CPU High
+Memory High
+Disk Full
+EBS Alerts
+Volume running out of space
+Auto Scaling Notifications
+New EC2 instance launched
+Backup Notifications
+Snapshot completed successfully
+Example Flow
+CloudWatch Alarm
+        │
+        ▼
+SNS Topic
+        │
+        ▼
+Email Notification
+        │
+        ▼
+Administrator
+
+Why Use a Topic?
+Without a topic:
+CloudWatch
+   ├── Email1
+   ├── Email2
+   └── Email3
+Many direct connections.
+
+With SNS:
+CloudWatch
+      │
+      ▼
+ SNS Topic
+      │
+ ┌────┼────┐
+ ▼    ▼    ▼
+E1   E2   E3
+Much easier to manage.
+
+Example AWS CLI
+Create topic:
+aws sns create-topic --name ServerAlerts
+Subscribe email:
+aws sns subscribe \
+  --topic-arn <topic-arn> \
+  --protocol email \
+  --notification-endpoint suresh@example.com
+Publish message:
+aws sns publish \
+  --topic-arn <topic-arn> \
+  --message "CPU usage crossed 90%"
+SNS sends the email.
+
+| Term               | Meaning                     |
+| ------------------ | --------------------------- |
+| SNS                | Simple Notification Service |
+| Topic              | Notification channel/group  |
+| Subscriber         | Recipient of messages       |
+| Email Notification | SNS sends message to email  |
+| Publisher          | Service sending the message |
+
+
+The most common DevOps use case is:
+
+CloudWatch Alarm
+      ↓
+SNS Topic
+      ↓
+Email Notification
+      ↓
+DevOps Engineer
+
+So when a server, EBS volume, Kubernetes node, or application has a problem, AWS can automatically send you an email through SNS.
