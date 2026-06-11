@@ -391,134 +391,10 @@ Network Load Balancer → Layer 4
 VPC Routing Tables → Layer 3
 Security Groups and Network ACLs mainly work with Layer 3/4 information (IPs, protocols, ports)
 
-If you'd like, I can also explain how a packet travels from your laptop to Google step by step through all 7 OSI layers, which makes the model much easier to remember.
-yes
-Great! Let's follow a real packet from your laptop to Google and see what happens at each OSI layer.
-
-Suppose you open a browser and type:
-https://www.google.com
-
-Step 1: Application Layer (Layer 7)
-Your browser creates an HTTP request:
-GET / HTTP/1.1
-Host: www.google.com
-This is the actual message you want to send.
-Think:
-"I want Google's homepage."
-HTTP stands for:
-HyperText Transfer Protocol
-HTTP is a protocol, meaning a set of communication rules.
-It defines:
-How a browser asks for a page.
-How a server responds.
-The format of requests and responses.
-
-Step 2: Presentation Layer (Layer 6)
-Since you're using HTTPS, the data is encrypted using TLS/SSL.
-Before encryption:
-GET / HTTP/1.1
-Host: www.google.com
-After encryption:
-8h3K#@2LmP...
-Anyone intercepting the traffic sees only encrypted data.
-
-Step 3: Session Layer (Layer 5)
-A communication session is established between:
-Your Browser <-----> Google Server
-The session layer helps maintain and manage this conversation.
-
-Step 4: Transport Layer (Layer 4)
-The Transport Layer uses TCP.
-First, TCP establishes a connection using the 3-way handshake:
-Laptop                        Google
-SYN       ------------------->
-          <------------------- SYN-ACK
-ACK       ------------------->
-
-Connection established.
-
-Now TCP adds:
-
-Source Port      : 50000
-Destination Port : 443
-
-Example:
-192.168.1.10:50000 ---> Google:443
-Port 443 means HTTPS.
-
-Step 5: Network Layer (Layer 3)
-Now an IP header is added.
-Example:
-
-Source IP      : 192.168.1.10
-Destination IP : 142.250.183.36
-
-(One of Google's IP addresses)
-
-Packet becomes:
-
-Source IP      : 192.168.1.10
-Destination IP : 142.250.183.36
-TCP Port       : 443
-Data           : Encrypted HTTP Request
-
-Routers use this information to decide where to send the packet.
-
-Step 6: Data Link Layer (Layer 2)
-Now MAC addresses are added.
-Example:
-Source MAC      : AA:BB:CC:DD:EE:FF
-Destination MAC : 11:22:33:44:55:66
-These MAC addresses are used only on the local network.
-The packet is now inside an Ethernet frame.
-
-Step 7: Physical Layer (Layer 1)
-The frame is converted into actual signals:
-Electrical signals (Ethernet cable)
-Light signals (Fiber)
-Radio waves (Wi-Fi)
-
-These signals travel to your router.
-
-Journey Through the Internet
-
-Your home router receives the packet.
-
-Laptop
-   |
-   v
-Home Router
-   |
-   v
-ISP
-   |
-   v
-Internet Routers
-   |
-   v
-Google Network
-   |
-   v
-Google Server
-
-At each router:
-Layer 2 information changes
-Layer 3 IP addresses remain the same
-Routers use the destination IP to forward the packet.
-
-At Google's Server
-The server receives the packet and removes the headers in reverse order.
-Layer 1 -> Layer 2 -> Layer 3 -> Layer 4 -> Layer 5 -> Layer 6 -> Layer 7
-This process is called decapsulation.
-
-Finally Google sees:
-GET / HTTP/1.1
-Host: www.google.com
-Google processes the request and sends a response back.
 
 
 Encapsulation and Decapsulation
-
+-----------------------------------
 When sending:
 
 Application Data
@@ -548,44 +424,9 @@ Deliver to Application
 
 This is called decapsulation.
 
-What DevOps Engineers Usually See
 
-When you work with Docker, Kubernetes, Linux, and AWS:
-
-Layer 7
-HTTP
-HTTPS
-REST APIs
-Ingress
-Application Load Balancer
-Layer 4
-TCP
-UDP
-Ports
-Network Load Balancer
-
-Examples:
-
-22    SSH
-80    HTTP
-443   HTTPS
-3306  MySQL
-Layer 3
-IP addresses
-Subnets
-Routing
-VPC
-Route Tables
-
-Examples:
-
-10.0.1.5
-192.168.1.10
-172.31.0.0/16
-Easy Memory Trick
 
 Think of sending a courier:
-
 OSI Layer	Courier Analogy
 7 Application	Letter you wrote
 6 Presentation	Encrypt/translate letter
@@ -913,3 +754,193 @@ Examples of Linux Daemons
 | `crond`   | Runs scheduled jobs    |
 | `systemd` | System/service manager |
 | `dockerd` | Docker daemon          |
+
+
+
+
+
+Why do we use http://IP:port?
+http://54.100.10.20:80
+contains three pieces.
+http://     54.100.10.20     :80
+Protocol      Address        Port
+
+Part 1: http://
+This tells the browser:
+"Use the HTTP protocol."
+Examples:
+http://
+https://
+ftp://
+Different protocols have different communication rules.
+
+Part 2: IP Address
+Example:
+54.100.10.20
+An IP address identifies a machine on the network.
+54.100.10.20
+identifies a specific server.
+
+Part 3: Port Number
+A server can run many services simultaneously.
+Example:
+EC2 Server
+Running:
+Apache Web Server
+SSH Server
+MySQL Server
+How does the operating system know which service should receive the request?
+Using ports.
+Example:
+Port 80   -> Apache (HTTP)
+Port 443  -> HTTPS
+Port 22   -> SSH
+Port 3306 -> MySQL
+
+Complete Example
+Suppose:
+http://54.100.10.20:80
+means:
+Step 1
+Use:
+HTTP protocol
+Step 2
+Connect to:
+Server 54.100.10.20
+Step 3
+Talk to service:
+Port 80
+which is Apache.
+
+Why can we omit :80 sometimes?
+When you type:
+http://54.100.10.20
+the browser automatically assumes:
+http://54.100.10.20:80
+because:
+HTTP default port = 80
+Similarly:
+https://google.com
+automatically means:
+https://google.com:443
+because:
+HTTPS default port = 443
+
+
+| Setting                      | Meaning                                                |
+| ---------------------------- | ------------------------------------------------------ |
+| Target Type = Instance       | Targets are EC2 instances                              |
+| Protocol = HTTP              | ALB communicates with targets using HTTP               |
+| Port = 80                    | Send traffic to port 80 on the instances               |
+| Health Check Path = /        | Check the website root page                            |
+| Health Check Protocol = HTTP | Use HTTP GET requests for health checks                |
+| Healthy Threshold = 3        | Need 3 consecutive successful checks to become healthy |
+| Unhealthy Threshold = 2      | Need 2 consecutive failed checks to become unhealthy   |
+
+
+
+
+
+1. What is meant by / (Website Root Page)?
+Suppose your Apache web server has:
+/var/www/html/
+├── index.html
+├── about.html
+├── contact.html
+The / represents the root of the website.
+Think of it like the top folder of a website.
+
+/
+├── index.html
+├── about.html
+├── contact.html
+
+Example
+When you open:
+http://54.100.10.20/
+The browser requests:
+GET /
+The web server interprets / as:
+"Give me the default page of the website."
+Usually Apache or Nginx looks for:
+index.html
+and serves it.
+
+Why Does ALB Use / For Health Checks?
+The load balancer wants to know:
+"Is the web server alive?"
+It sends:
+GET /
+If Apache responds:
+200 OK
+the server is healthy.
+
+
+
+
+Health Check Protocol: HTTP
+You selected:
+Protocol: HTTP
+Meaning:
+"Use HTTP requests for health checks."
+The ALB periodically sends:
+GET /
+and expects:
+200 OK
+
+
+
+
+Main HTTP Request Methods
+--------------------------
+
+| Method  | Purpose                    | CRUD Operation |
+| ------- | -------------------------- | -------------- |
+| GET     | Retrieve data              | Read           |
+| POST    | Create new data            | Create         |
+| PUT     | Replace existing data      | Update         |
+| PATCH   | Partially update data      | Update         |
+| DELETE  | Remove data                | Delete         |
+| HEAD    | Get headers only           | Read           |
+| OPTIONS | Discover supported methods | N/A            |
+
+
+
+
+Common HTTP Status Codes
+------------------------
+
+| Method  | Purpose                    | CRUD Operation |
+| ------- | -------------------------- | -------------- |
+| GET     | Retrieve data              | Read           |
+| POST    | Create new data            | Create         |
+| PUT     | Replace existing data      | Update         |
+| PATCH   | Partially update data      | Update         |
+| DELETE  | Remove data                | Delete         |
+| HEAD    | Get headers only           | Read           |
+| OPTIONS | Discover supported methods | N/A            |
+
+
+
+Healthy Threshold: 3
+You selected:
+Healthy threshold = 3
+Meaning:
+The server must pass 3 consecutive health checks before AWS marks it healthy.
+Example
+Suppose a new server starts.
+Health check results:
+Success
+Success
+Success
+After the third success:
+Instance Status = Healthy
+Now traffic is allowed.
+Why?
+This prevents temporary successes from marking a broken server healthy.
+
+Unhealthy Threshold: 2
+You selected:
+Unhealthy threshold = 2
+Meaning:
+If the server fails 2 consecutive health checks, mark it unhealthy.
