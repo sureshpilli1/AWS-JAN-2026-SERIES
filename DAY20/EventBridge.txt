@@ -302,4 +302,40 @@ AWS automatically:
 You never see or manage the underlying servers.
 Serverless Approach
 
-With a serverless service such as Amazon EventBridge:
+
+
+what is input transformer:
+Input Transformer
+Without a transformer, SNS receives the whole JSON event.
+Something ugly like:
+{
+  "version":"0",
+  "id":"abcd",
+  ...
+}
+Instead, you extract only useful fields.
+Input Paths:
+{
+  "instance": "$.detail.instance-id",
+  "state": "$.detail.state",
+  "region": "$.region",
+  "time": "$.time"
+}
+This means:
+instance -> instance-id
+state    -> state
+region   -> AWS region
+time     -> event timestamp
+Then EventBridge builds a custom message:
+{
+  "Message": "EC2 Instance <instance> is now <state> in region <region> at <time>"
+}
+Example output:
+EC2 Instance i-0abc123 is now stopped in region us-east-1 at 2026-08-10T10:30:00Z
+SNS emails this message.
+
+
+
+
+
+
