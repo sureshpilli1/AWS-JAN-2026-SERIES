@@ -240,3 +240,41 @@ EC2 instance terminates
 S3 object is created
 CodePipeline execution succeeds
 These events originate from AWS services themselves, so they are called native AWS service events
+
+what is meant by serverless service:
+One-Line Definition
+A serverless service is a cloud service where the cloud provider manages all underlying servers and infrastructure, allowing you to focus only on using the service and its features.
+So when AWS says:
+"Amazon EventBridge is a serverless event bus service"
+it means:
+EventBridge provides an event bus for routing events, while AWS handles all the servers, scaling, maintenance, and availability behind the scenes.
+Traditional Server Approach
+
+Traditional Server Approach
+Suppose you want to run an application.
+You create an EC2 instance:
+You must:
+✓ Launch server
+✓ Choose instance size
+✓ Install OS
+✓ Apply patches
+✓ Configure scaling
+✓ Monitor CPU and memory
+Here, you manage the server.
+
+Serverless Approach
+With a serverless service such as Amazon EventBridge:
+You only:
+✓ Create rules
+✓ Define event patterns
+✓ Choose targets
+AWS automatically:
+✓ Provides servers
+✓ Maintains servers
+✓ Scales servers
+✓ Patches servers
+✓ Handles availability
+You never see or manage the underlying servers.
+Serverless Approach
+
+With a serverless service such as Amazon EventBridge:
