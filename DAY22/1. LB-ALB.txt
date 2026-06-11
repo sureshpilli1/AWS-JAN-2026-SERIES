@@ -50,7 +50,7 @@ sudo systemctl start httpd
 ```
 3. Customize index.html:
 ```bash
-echo "<h1>Web Server 1</h1>" | sudo tee /var/www/html/index.html
+echo "<h1>Web Server 1</h1>" | sudo tee /var/www/html/index.html (tee reads input and writes it to a file.)
 ```
 Repeat on second instance:
 ```bash
@@ -405,6 +405,13 @@ Host: www.google.com
 This is the actual message you want to send.
 Think:
 "I want Google's homepage."
+HTTP stands for:
+HyperText Transfer Protocol
+HTTP is a protocol, meaning a set of communication rules.
+It defines:
+How a browser asks for a page.
+How a server responds.
+The format of requests and responses.
 
 Step 2: Presentation Layer (Layer 6)
 Since you're using HTTPS, the data is encrypted using TLS/SSL.
@@ -738,3 +745,171 @@ AWS and DevOps Mapping
 
 
 
+
+What is a Web Server?
+A web server is software that:
+Receives requests from clients (browsers) and sends back web content such as HTML pages, images, CSS files, JSON data, etc.
+Examples of web servers:
+Apache HTTP Server (httpd)
+Nginx
+Microsoft IIS
+What Does a Web Server Do?
+Suppose your browser requests:
+http://54.100.10.20
+The browser sends a request.
+The web server:
+Receives the request.
+Finds the requested file.
+Sends the file back.
+Example:
+Browser
+   |
+   | HTTP Request
+   v
+Apache (httpd)
+   |
+   | Reads
+   v
+index.html
+   |
+   v
+Browser Displays Page
+
+
+Relationship Between Web Server and HTTP
+This is the key idea:
+HTTP
+Defines the rules.
+Web Server
+Follows those rules.
+
+Example Flow
+You type:
+http://example.com
+Step 1
+Browser creates an HTTP request:
+GET /
+Host: example.com
+Step 2
+Request reaches Apache (httpd).
+Browser
+   |
+   v
+Apache
+Step 3
+Apache looks for:
+/var/www/html/index.html
+Step 4
+Apache reads:
+<h1>Welcome</h1>
+Step 5
+Apache sends an HTTP response:
+HTTP/1.1 200 OK
+<h1>Welcome</h1>
+Step 6
+Browser renders:
+Welcome
+
+
+1. What is httpd?
+httpd stands for:
+HTTP Daemon
+It is the Apache web server process running on Linux.
+When you install Apache
+a web server is installed.
+
+The httpd service:
+Listens on port 80 (HTTP)
+Receives browser requests
+Finds the requested file
+Sends the file back to the browser
+Example:
+Client Browser
+      |
+      | GET /
+      v
+    httpd
+
+2. What is HTML?
+HTML stands for:
+HyperText Markup Language
+It is the language used to create web pages.
+Example:
+<h1>Hello World</h1>
+<p>Welcome to my website</p>
+HTML defines:
+Headings
+Paragraphs
+Images
+Tables
+Forms
+Links
+HTML is content, not a server.
+
+3. What is index.html?
+index.html is simply a file containing HTML.
+Example:
+File:
+/var/www/html/index.html
+Content:
+<h1>Web Server 1</h1>
+The filename is special because web servers look for it by default.
+
+
+What is HTML?
+HTML stands for:
+HyperText Markup Language
+It is the language used to create web pages.
+Example:
+<h1>Hello World</h1>
+<p>Welcome to my website</p>
+HTML defines:
+Headings
+Paragraphs
+Images
+Tables
+Forms
+Links
+HTML is content, not a server.
+
+
+
+Quick HTML Tag Cheat Sheet
+
+| Tag              | Purpose        |
+| ---------------- | -------------- |
+| `<h1>` to `<h6>` | Headings       |
+| `<p>`            | Paragraph      |
+| `<a>`            | Link           |
+| `<img>`          | Image          |
+| `<table>`        | Table          |
+| `<tr>`           | Table Row      |
+| `<th>`           | Table Header   |
+| `<td>`           | Table Data     |
+| `<form>`         | Form           |
+| `<input>`        | Input Field    |
+| `<ul>`           | Unordered List |
+| `<ol>`           | Ordered List   |
+| `<li>`           | List Item      |
+| `<br>`           | Line Break     |
+
+
+
+What is a Daemon?
+A daemon is a background process that runs continuously and provides services or performs tasks without direct user interaction. 
+Examples include httpd (Apache), sshd (SSH server), and dockerd (Docker daemon).
+In Linux/Unix, a daemon is a program that runs in the background and provides a service.
+It usually:
+Starts automatically when the system boots.
+Runs continuously.
+Waits for requests or events.
+Has no direct user interface.
+
+Examples of Linux Daemons
+| Daemon    | Purpose                |
+| --------- | ---------------------- |
+| `httpd`   | Apache web server      |
+| `sshd`    | SSH server             |
+| `crond`   | Runs scheduled jobs    |
+| `systemd` | System/service manager |
+| `dockerd` | Docker daemon          |
