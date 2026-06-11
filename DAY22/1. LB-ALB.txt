@@ -910,15 +910,18 @@ Main HTTP Request Methods
 Common HTTP Status Codes
 ------------------------
 
-| Method  | Purpose                    | CRUD Operation |
-| ------- | -------------------------- | -------------- |
-| GET     | Retrieve data              | Read           |
-| POST    | Create new data            | Create         |
-| PUT     | Replace existing data      | Update         |
-| PATCH   | Partially update data      | Update         |
-| DELETE  | Remove data                | Delete         |
-| HEAD    | Get headers only           | Read           |
-| OPTIONS | Discover supported methods | N/A            |
+| Code | Meaning               |
+| ---- | --------------------- |
+| 200  | OK (Success)          |
+| 201  | Created               |
+| 301  | Moved Permanently     |
+| 302  | Redirect              |
+| 400  | Bad Request           |
+| 401  | Unauthorized          |
+| 403  | Forbidden             |
+| 404  | Not Found             |
+| 500  | Internal Server Error |
+| 503  | Service Unavailable   |
 
 
 
