@@ -221,7 +221,10 @@ Data
 Processing
 
 Layer 7 – Application Layer
-This is the layer closest to the user.
+This is the layer closest to the user.The Application Layer (Layer 7) is the layer that directly interacts with applications used by humans.
+Simple Definition
+The Application Layer provides network services to end-user applications and defines how applications communicate over a network.
+
 Protocols:
 HTTP
 HTTPS
@@ -585,7 +588,8 @@ OSI Layer	Courier Analogy
 2 Data Link	Local delivery instructions
 1 Physical	Road, truck, cable, Wi-Fi
 
-For DevOps interviews, if you thoroughly understand Layer 3 (IPs), Layer 4 (TCP/UDP/Ports), and Layer 7 (HTTP/HTTPS), you'll be able to understand most networking questions in AWS, Docker, Kubernetes, and load balancers.
+For DevOps interviews, if you thoroughly understand Layer 3 (IPs), Layer 4 (TCP/UDP/Ports), and Layer 7 (HTTP/HTTPS), you'll be able to understand most networking questions in AWS, Docker, Kubernetes, 
+and load balancers.
 
 
 
