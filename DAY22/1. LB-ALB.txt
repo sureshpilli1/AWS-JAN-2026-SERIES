@@ -947,3 +947,85 @@ You selected:
 Unhealthy threshold = 2
 Meaning:
 If the server fails 2 consecutive health checks, mark it unhealthy.
+
+
+
+
+
+
+what is meant by host based and path based routing:
+
+1. Host-Based Routing
+
+Host-based routing uses the Host header (domain name) to decide where to send traffic.
+
+| Host Name         | Target Group  |
+| ----------------- | ------------- |
+| company.com       | Web Servers   |
+| api.company.com   | API Servers   |
+| admin.company.com | Admin Servers |
+
+Example Request
+
+GET /
+Host: api.company.com
+ALB sees:
+Host = api.company.com
+and forwards traffic to:
+API Target Group
+
+2. Path-Based Routing
+Path-based routing uses the URL path to decide where to send traffic.
+Suppose all traffic uses the same domain:
+company.com
+but different paths.
+
+| Path      | Target Group    |
+| --------- | --------------- |
+| /products | Product Service |
+| /orders   | Order Service   |
+| /payments | Payment Service |
+
+Request 1:
+GET /products
+Host: company.com
+ALB routes to:
+Product Service
+
+
+Host-Based + Path-Based Together
+You can combine both.
+Example:
+| Host              | Path      | Destination   |
+| ----------------- | --------- | ------------- |
+| api.company.com   | /users/*  | User Service  |
+| api.company.com   | /orders/* | Order Service |
+| admin.company.com | /*        | Admin Service |
+
+
+
+Easy Way to Think About It
+Every HTTP request contains both:
+Host
+Path
+Example:
+https://www.amazon.com/orders
+contains:
+Host = www.amazon.com
+Path = /orders
+The difference is:
+Host-Based Routing
+ALB decision:
+Look at Host
+Ignore Path
+
+Path-Based Routing
+ALB decision:
+Look at Path
+Ignore Host (or Host is same for everyone)
+
+Combined Routing
+ALB decision:
+Look at Host
+AND
+Look at Path
