@@ -1,0 +1,451 @@
+explaination by chatgpt:
+
+Why Computers Use 0 and 1
+Inside a computer, electronic circuits have two stable states:
+Voltage Present    → 1
+Voltage Absent     → 0
+or
+Switch ON  → 1
+Switch OFF → 0
+That's why computers naturally work with binary.
+
+Binary Number System
+Computers use binary (base 2).
+In decimal (base 10), place values are:
+1000 100 10 1
+Example:
+345
+=
+3×100 + 4×10 + 5×1
+
+In binary (base 2), place values are:
+128 64 32 16 8 4 2 1
+These come from powers of 2:
+2⁷ 2⁶ 2⁵ 2⁴ 2³ 2² 2¹ 2⁰
+which are:
+128 64 32 16 8 4 2 1
+
+A binary digit (called a bit) can have only two values:
+0 = OFF
+1 = ON
+or
+0 = No
+1 = Yes
+or
+0 = Don't include this value
+1 = Include this value
+
+Example
+Suppose we have:
+10101000
+Place values:
+128 64 32 16 8 4 2 1
+Let's see what each bit means:
+1   0   1   0   1   0   0   0
+│   │   │   │   │   │   │   │
+128 64  32 16  8  4  2  1
+
+Interpretation:
+128 → ON  (1)
+64  → OFF (0)
+32  → ON  (1)
+16  → OFF (0)
+8   → ON  (1)
+4   → OFF (0)
+2   → OFF (0)
+1   → OFF (0)
+Add only the ON values:
+128 + 32 + 8
+= 168
+Therefore:
+10101000₂ = 168₁₀
+
+why 10.0.0.0 why not 592.658.582.652
+What is the maximum value of an octet?
+8 bits can store:
+00000000 = 0
+to
+11111111 = 255
+Therefore:
+Each octet can only be between 0 and 255
+Why?
+Because:
+2
+8
+gives:
+256 values
+which are:
+0 to 255
+
+classification:
+How the Ranges Are Derived
+
+| Binary     | Decimal | Class        |
+| ---------- | ------- | ------------ |
+| `00000001` | 1       | A (smallest) |
+| `01111110` | 126     | A (largest)  |
+| `10000000` | 128     | B (smallest) |
+| `10111111` | 191     | B (largest)  |
+| `11000000` | 192     | C (smallest) |
+| `11011111` | 223     | C (largest)  |
+| `11100000` | 224     | D (smallest) |
+| `11101111` | 239     | D (largest)  |
+| `11110000` | 240     | E (smallest) |
+| `11111111` | 255     | E (largest)  |
+
+| Class | Starts With (Binary) | First Octet Range | Purpose               |
+| ----- | -------------------- | ----------------- | --------------------- |
+| A     | `0xxxxxxx`           | 1 - 126           | Large networks        |
+| B     | `10xxxxxx`           | 128 - 191         | Medium networks       |
+| C     | `110xxxxx`           | 192 - 223         | Small networks        |
+| D     | `1110xxxx`           | 224 - 239         | Multicast             |
+| E     | `1111xxxx`           | 240 - 255         | Reserved/Experimental |
+
+
+
+
+How Does the First Octet Determine the Class? The first few bits of the first octet identify the class.
+
+| Class | First Bits |
+| ----- | ---------- |
+| A     | 0          |
+| B     | 10         |
+| C     | 110        |
+| D     | 1110       |
+| E     | 1111       |
+
+Example Class A First octet: 10 Binary: 00001010 Starts with: 0 Therefore: Class A
+Example Class B First octet: 172 Binary: 10101100 Starts with: 10 Therefore: Class B
+Example Class C First octet: 192 Binary: 11000000 Starts with: 110 Therefore: Class C
+Class D Range: 224 - 239 Used for: Multicast Example: 239.1.1.1 One sender can transmit to many receivers.
+Class E Range: 240 - 255 Reserved for: Research Experimentaluse Not used for normal hosts. Why Classes Are Mostly Historical Today Modern networks use: CIDR (Classless Inter-Domain Routing) 
+Examples: 192.168.1.0/24 10.0.0.0/20 172.16.0.0/18 Instead of relying on Class A/B/C. CIDR allows much more efficient use of IP addresses.
+
+Easy Memory Trick
+
+| Class | Default Mask | Network Bits | Host Bits |
+| ----- | ------------ | ------------ | --------- |
+| A     | /8           | 8            | 24        |
+| B     | /16          | 16           | 16        |
+| C     | /24          | 24           | 8         |
+
+
+what is mask
+The mask hides the host bits and reveals the network bits.
+IP:
+192.168.1.10
+
+Mask:
+255.255.255.0
+
+You cannot determine the subnet mask from the IP address alone.
+The subnet mask (or CIDR prefix) must also be provided.
+
+Why Do We Need a Mask?
+Suppose you have an IP address:
+192.168.1.10
+Question:
+Which part represents the network?
+Which part represents the host (device)?
+The IP address alone doesn't tell us.
+So we use a subnet mask.
+
+10.0.0.15/8 Mask is 255.0.0.0 how
+The /8 means:
+First 8 bits are Network bits
+So we need a subnet mask with:
+8 ones
+followed by
+24 zeros
+Step 2: Write the Binary Mask
+11111111.00000000.00000000.00000000
+Count the 1s:
+11111111 = 8 ones
+Total:
+8 network bits
+Therefore:
+/8
+Step 3: Convert Binary to Decimal
+First octet:
+11111111
+Calculate:
+128 + 64 + 32 + 16 + 8 + 4 + 2 + 1
+= 255
+Remaining octets:
+00000000 = 0
+Therefore:
+11111111.00000000.00000000.00000000
+=
+255.0.0.0
+Final Result
+/8
+=
+255.0.0.0
+Apply It to Your IP
+IP:
+10.0.0.15/8
+Mask:
+255.0.0.0
+Binary:
+IP:
+00001010.00000000.00000000.00001111
+Mask:
+11111111.00000000.00000000.00000000
+The first 8 bits belong to the network:
+00001010
+which is:
+10
+So:
+Network = 10.0.0.0
+Host    = 0.0.0.15
+
+
+Example 1: /24
+IP:   192.168.1.10
+Mask: 255.255.255.0
+Network:
+192.168.1.0
+Host:
+10
+
+Example 2: /16
+IP:   192.168.1.10
+Mask: 255.255.0.0
+Network:
+192.168.0.0
+Host:
+1.10
+Same IP, different network!
+
+Example 3: /25
+IP:   192.168.1.10
+Mask: 255.255.255.128
+Network:
+192.168.1.0
+Usable hosts:
+192.168.1.1
+to
+192.168.1.126
+
+
+
+
+CIDR:
+The masking system did not change. What changed was the way networks are allocated and represented.
+Think of it this way:
+Old (Classful Networking)
+The network size was determined by the IP class.
+Class	Default Mask
+A	255.0.0.0 (/8)
+B	255.255.0.0 (/16)
+C	255.255.255.0 (/24)
+Example:
+192.168.1.10
+People automatically assumed:
+255.255.255.0
+because it was a Class C address.
+Problem
+Suppose a company needs:
+500 hosts
+Class C:
+254 hosts
+Too small.
+Class B:
+65,534 hosts
+Too large.
+Huge waste of IP addresses.
+
+Modern (CIDR)
+CIDR removed the restriction that networks must be only:
+/8
+/16
+/24
+
+Now you can use:
+/20
+/21
+/22
+/23
+/25
+/26
+/27
+...
+
+whatever size you need.
+Example:
+10.0.0.0/20
+Mask:
+255.255.240.0
+This would have been impossible in the old classful system.
+
+
+If the subnet mask concept stayed the same, how did networking change from Class A/B/C to CIDR?
+The answer is:
+Routers stopped assuming the mask based on the IP class and started carrying the mask information explicitly.
+
+Old Classful Networking
+Suppose you saw:
+192.168.1.10
+Router automatically thought:
+192 = Class C
+Class C = /24
+Mask = 255.255.255.0
+No need to specify the mask.
+The router assumed it.
+
+CIDR Idea
+Instead of saying:
+192.x.x.x = always /24
+CIDR says:
+Don't assume anything.
+Always specify the prefix.
+Examples:
+192.168.1.0/23
+192.168.1.0/25
+192.168.1.0/27
+All are valid.
+
+What Changed in Routers?
+Old router:
+IP starts with 192
+      ↓
+Must be Class C
+      ↓
+Must be /24
+
+CIDR router:
+Network = 192.168.1.0/27
+The router stores:
+Network Address
++
+Prefix Length
+and no longer cares about classes.
+
+Example
+Classful world:
+172.16.0.0
+Automatically:
+Class B
+Mask = /16
+
+CIDR world:
+172.16.0.0/20
+Mask:
+255.255.240.0
+Perfectly valid.
+Even though it is not a Class B default mask.
+
+What Changed?
+Before
+The mask was implied by the class.
+10.x.x.x     → /8
+172.x.x.x    → /16
+192.x.x.x    → /24
+
+After CIDR
+The mask is explicitly specified.
+10.0.0.0/22
+10.0.0.0/19
+10.0.0.0/27
+No assumptions.
+
+CIDR became possible because routers stopped deriving the subnet mask from the IP address class and instead started using an explicitly provided prefix length (such as /20 or /27). 
+The subnet mask itself did not change; only the rule for determining it changed.
+
+
+
+172.16.0.0/20 how many IP are possible and their range 
+
+Let's calculate it step by step.
+Given:
+172.16.0.0/20
+Step 1: Find Host Bits
+IPv4 has:
+32 bits
+CIDR:
+/20
+So:
+Network bits = 20
+Host bits    = 12
+because:
+32 - 20 = 12
+
+Step 2: Total IP Addresses
+Formula:
+2
+12
+Result:
+4096 IP addresses
+
+Step 3: Usable Hosts
+Reserve:
+1 Network Address
+1 Broadcast Address
+Formula:
+2
+12
+−2
+Result:
+4094 usable hosts
+
+Step 4: Find the Subnet Mask
+CIDR:
+/20
+Binary:
+11111111.11111111.11110000.00000000
+Decimal:
+255.255.240.0
+
+Step 5: Find the Range
+Mask:
+255.255.240.0
+Notice the third octet:
+240
+Binary:
+11110000
+The block size is:
+256 - 240 = 16
+Therefore networks increase by 16 in the third octet:
+172.16.0.0
+172.16.16.0
+172.16.32.0
+...
+Since your network starts at:
+172.16.0.0
+it covers up to:
+172.16.15.255
+Complete Range
+Network Address
+172.16.0.0
+First Usable Host
+172.16.0.1
+Last Usable Host
+172.16.15.254
+Broadcast Address
+172.16.15.255
+Visual Representation
+Network:
+172.16.0.0/20
+
+Range:
+172.16.0.0
+    ↓
+172.16.15.255
+
+Third octet ranges from:
+
+0 to 15
+
+Fourth octet ranges from:
+0 to 255
+Summary Table
+| Item              | Value         |
+| ----------------- | ------------- |
+| Network           | 172.16.0.0/20 |
+| Subnet Mask       | 255.255.240.0 |
+| Total IPs         | 4096          |
+| Usable Hosts      | 4094          |
+| Network Address   | 172.16.0.0    |
+| First Host        | 172.16.0.1    |
+| Last Host         | 172.16.15.254 |
+| Broadcast Address | 172.1
