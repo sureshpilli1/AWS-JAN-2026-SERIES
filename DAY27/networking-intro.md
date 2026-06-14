@@ -171,3 +171,191 @@ A **loopback address** is a special IP address that is used to test network inte
    - Key Pair (for SSH access)
 9. **Connect to the Linux Server.**
 
+
+
+
+
+
+
+
+explaination by chatgpt:
+
+Why Computers Use 0 and 1
+
+Inside a computer, electronic circuits have two stable states:
+
+Voltage Present    → 1
+Voltage Absent     → 0
+
+or
+
+Switch ON  → 1
+Switch OFF → 0
+
+That's why computers naturally work with binary.
+
+
+Step 1: Binary Number System
+
+Computers use binary (base 2).
+
+In decimal (base 10), place values are:
+
+1000 100 10 1
+
+Example:
+
+345
+=
+3×100 + 4×10 + 5×1
+
+In binary (base 2), place values are:
+
+128 64 32 16 8 4 2 1
+
+These come from powers of 2:
+
+2⁷ 2⁶ 2⁵ 2⁴ 2³ 2² 2¹ 2⁰
+
+which are:
+
+128 64 32 16 8 4 2 1
+
+A binary digit (called a bit) can have only two values:
+
+0 = OFF
+1 = ON
+
+or
+
+0 = No
+1 = Yes
+
+or
+
+0 = Don't include this value
+1 = Include this value
+Example
+
+Suppose we have:
+
+10101000
+
+Place values:
+
+128 64 32 16 8 4 2 1
+
+Let's see what each bit means:
+
+1   0   1   0   1   0   0   0
+│   │   │   │   │   │   │   │
+128 64  32 16  8  4  2  1
+
+Interpretation:
+
+128 → ON  (1)
+64  → OFF (0)
+32  → ON  (1)
+16  → OFF (0)
+8   → ON  (1)
+4   → OFF (0)
+2   → OFF (0)
+1   → OFF (0)
+
+Add only the ON values:
+
+128 + 32 + 8
+= 168
+
+Therefore:
+
+10101000₂ = 168₁₀
+
+why 10.0.0.0 why not 592.658.582.652
+What is the maximum value of an octet?
+
+8 bits can store:
+
+00000000 = 0
+
+to
+
+11111111 = 255
+
+Therefore:
+
+Each octet can only be between 0 and 255
+Why?
+
+Because:
+
+2
+8
+
+gives:
+
+256 values
+
+which are:
+
+0 to 255
+
+
+classification:
+
+How the Ranges Are Derived
+
+| Binary     | Decimal | Class        |
+| ---------- | ------- | ------------ |
+| `00000001` | 1       | A (smallest) |
+| `01111110` | 126     | A (largest)  |
+| `10000000` | 128     | B (smallest) |
+| `10111111` | 191     | B (largest)  |
+| `11000000` | 192     | C (smallest) |
+| `11011111` | 223     | C (largest)  |
+| `11100000` | 224     | D (smallest) |
+| `11101111` | 239     | D (largest)  |
+| `11110000` | 240     | E (smallest) |
+| `11111111` | 255     | E (largest)  |
+
+| Class | Starts With (Binary) | First Octet Range | Purpose               |
+| ----- | -------------------- | ----------------- | --------------------- |
+| A     | `0xxxxxxx`           | 1 - 126           | Large networks        |
+| B     | `10xxxxxx`           | 128 - 191         | Medium networks       |
+| C     | `110xxxxx`           | 192 - 223         | Small networks        |
+| D     | `1110xxxx`           | 224 - 239         | Multicast             |
+| E     | `1111xxxx`           | 240 - 255         | Reserved/Experimental |
+
+
+
+
+
+
+How Does the First Octet Determine the Class? The first few bits of the first octet identify the class.
+
+| Class | First Bits |
+| ----- | ---------- |
+| A     | 0          |
+| B     | 10         |
+| C     | 110        |
+| D     | 1110       |
+| E     | 1111       |
+
+Example Class A First octet: 10 Binary: 00001010 Starts with: 0 Therefore: Class A
+
+Example Class B First octet: 172 Binary: 10101100 Starts with: 10 Therefore: Class B
+
+Example Class C First octet: 192 Binary: 11000000 Starts with: 110 Therefore: Class C
+
+Class D Range: 224 - 239 Used for: Multicast Example: 239.1.1.1 One sender can transmit to many receivers.
+
+Class E Range: 240 - 255 Reserved for: Research Experimentaluse Not used for normal hosts. Why Classes Are Mostly Historical Today Modern networks use: CIDR (Classless Inter-Domain Routing) Examples: 192.168.1.0/24 10.0.0.0/20 172.16.0.0/18 Instead of relying on Class A/B/C. CIDR allows much more efficient use of IP addresses.
+
+Easy Memory Trick
+
+| Class | Default Mask | Network Bits | Host Bits |
+| ----- | ------------ | ------------ | --------- |
+| A     | /8           | 8            | 24        |
+| B     | /16          | 16           | 16        |
+| C     | /24          | 24           | 8         |
+
