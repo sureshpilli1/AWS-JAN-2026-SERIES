@@ -544,3 +544,817 @@ AWS and DevOps Mapping
 | ARP            | Address Resolution Protocol           | Network/Data Link (L2/L3) | N/A          | IP-to-MAC mapping           | Finds MAC address for an IP                            | Finding router MAC address           |
 | Ethernet       | Ethernet Protocol                     | Data Link (L2)            | N/A          | Local network communication | Uses MAC addresses                                     | Office LAN communication             |
 | Wi-Fi (802.11) | IEEE 802.11 Wireless Protocol         | Data Link (L2)            | N/A          | Wireless networking         | Wireless version of Ethernet-like communication        | Laptop connected to Wi-Fi            |
+
+
+
+
+What is a Web Server?
+A web server is software that:
+Receives requests from clients (browsers) and sends back web content such as HTML pages, images, CSS files, JSON data, etc.
+Examples of web servers:
+Apache HTTP Server (httpd)
+Nginx
+Microsoft IIS
+What Does a Web Server Do?
+Suppose your browser requests:
+http://54.100.10.20
+The browser sends a request.
+The web server:
+Receives the request.
+Finds the requested file.
+Sends the file back.
+Example:
+Browser
+   |
+   | HTTP Request
+   v
+Apache (httpd)
+   |
+   | Reads
+   v
+index.html
+   |
+   v
+Browser Displays Page
+
+
+Relationship Between Web Server and HTTP
+This is the key idea:
+HTTP
+Defines the rules.
+Web Server
+Follows those rules.
+
+Example Flow
+You type:
+http://example.com
+Step 1
+Browser creates an HTTP request:
+GET /
+Host: example.com
+Step 2
+Request reaches Apache (httpd).
+Browser
+   |
+   v
+Apache
+Step 3
+Apache looks for:
+/var/www/html/index.html
+Step 4
+Apache reads:
+<h1>Welcome</h1>
+Step 5
+Apache sends an HTTP response:
+HTTP/1.1 200 OK
+<h1>Welcome</h1>
+Step 6
+Browser renders:
+Welcome
+
+
+1. What is httpd?
+httpd stands for:
+HTTP Daemon
+It is the Apache web server process running on Linux.
+When you install Apache
+a web server is installed.
+
+The httpd service:
+Listens on port 80 (HTTP)
+Receives browser requests
+Finds the requested file
+Sends the file back to the browser
+Example:
+Client Browser
+      |
+      | GET /
+      v
+    httpd
+
+2. What is HTML?
+HTML stands for:
+HyperText Markup Language
+It is the language used to create web pages.
+Example:
+<h1>Hello World</h1>
+<p>Welcome to my website</p>
+HTML defines:
+Headings
+Paragraphs
+Images
+Tables
+Forms
+Links
+HTML is content, not a server.
+
+3. What is index.html?
+index.html is simply a file containing HTML.
+Example:
+File:
+/var/www/html/index.html
+Content:
+<h1>Web Server 1</h1>
+The filename is special because web servers look for it by default.
+
+
+What is HTML?
+HTML stands for:
+HyperText Markup Language
+It is the language used to create web pages.
+Example:
+<h1>Hello World</h1>
+<p>Welcome to my website</p>
+HTML defines:
+Headings
+Paragraphs
+Images
+Tables
+Forms
+Links
+HTML is content, not a server.
+
+
+
+Quick HTML Tag Cheat Sheet
+
+| Tag              | Purpose        |
+| ---------------- | -------------- |
+| `<h1>` to `<h6>` | Headings       |
+| `<p>`            | Paragraph      |
+| `<a>`            | Link           |
+| `<img>`          | Image          |
+| `<table>`        | Table          |
+| `<tr>`           | Table Row      |
+| `<th>`           | Table Header   |
+| `<td>`           | Table Data     |
+| `<form>`         | Form           |
+| `<input>`        | Input Field    |
+| `<ul>`           | Unordered List |
+| `<ol>`           | Ordered List   |
+| `<li>`           | List Item      |
+| `<br>`           | Line Break     |
+
+
+
+What is a Daemon?
+A daemon is a background process that runs continuously and provides services or performs tasks without direct user interaction. 
+Examples include httpd (Apache), sshd (SSH server), and dockerd (Docker daemon).
+In Linux/Unix, a daemon is a program that runs in the background and provides a service.
+It usually:
+Starts automatically when the system boots.
+Runs continuously.
+Waits for requests or events.
+Has no direct user interface.
+
+Examples of Linux Daemons
+| Daemon    | Purpose                |
+| --------- | ---------------------- |
+| `httpd`   | Apache web server      |
+| `sshd`    | SSH server             |
+| `crond`   | Runs scheduled jobs    |
+| `systemd` | System/service manager |
+| `dockerd` | Docker daemon          |
+
+
+
+
+
+Why do we use http://IP:port?
+http://54.100.10.20:80
+contains three pieces.
+http://     54.100.10.20     :80
+Protocol      Address        Port
+
+Part 1: http://
+This tells the browser:
+"Use the HTTP protocol."
+Examples:
+http://
+https://
+ftp://
+Different protocols have different communication rules.
+
+Part 2: IP Address
+Example:
+54.100.10.20
+An IP address identifies a machine on the network.
+54.100.10.20
+identifies a specific server.
+
+Part 3: Port Number
+A server can run many services simultaneously.
+Example:
+EC2 Server
+Running:
+Apache Web Server
+SSH Server
+MySQL Server
+How does the operating system know which service should receive the request?
+Using ports.
+Example:
+Port 80   -> Apache (HTTP)
+Port 443  -> HTTPS
+Port 22   -> SSH
+Port 3306 -> MySQL
+
+Complete Example
+Suppose:
+http://54.100.10.20:80
+means:
+Step 1
+Use:
+HTTP protocol
+Step 2
+Connect to:
+Server 54.100.10.20
+Step 3
+Talk to service:
+Port 80
+which is Apache.
+
+Why can we omit :80 sometimes?
+When you type:
+http://54.100.10.20
+the browser automatically assumes:
+http://54.100.10.20:80
+because:
+HTTP default port = 80
+Similarly:
+https://google.com
+automatically means:
+https://google.com:443
+because:
+HTTPS default port = 443
+
+
+| Setting                      | Meaning                                                |
+| ---------------------------- | ------------------------------------------------------ |
+| Target Type = Instance       | Targets are EC2 instances                              |
+| Protocol = HTTP              | ALB communicates with targets using HTTP               |
+| Port = 80                    | Send traffic to port 80 on the instances               |
+| Health Check Path = /        | Check the website root page                            |
+| Health Check Protocol = HTTP | Use HTTP GET requests for health checks                |
+| Healthy Threshold = 3        | Need 3 consecutive successful checks to become healthy |
+| Unhealthy Threshold = 2      | Need 2 consecutive failed checks to become unhealthy   |
+
+
+
+
+
+1. What is meant by / (Website Root Page)?
+Suppose your Apache web server has:
+/var/www/html/
+├── index.html
+├── about.html
+├── contact.html
+The / represents the root of the website.
+Think of it like the top folder of a website.
+
+/
+├── index.html
+├── about.html
+├── contact.html
+
+Example
+When you open:
+http://54.100.10.20/
+The browser requests:
+GET /
+The web server interprets / as:
+"Give me the default page of the website."
+Usually Apache or Nginx looks for:
+index.html
+and serves it.
+
+Why Does ALB Use / For Health Checks?
+The load balancer wants to know:
+"Is the web server alive?"
+It sends:
+GET /
+If Apache responds:
+200 OK
+the server is healthy.
+
+
+
+
+Health Check Protocol: HTTP
+You selected:
+Protocol: HTTP
+Meaning:
+"Use HTTP requests for health checks."
+The ALB periodically sends:
+GET /
+and expects:
+200 OK
+
+
+
+
+Main HTTP Request Methods
+--------------------------
+
+| Method  | Purpose                    | CRUD Operation |
+| ------- | -------------------------- | -------------- |
+| GET     | Retrieve data              | Read           |
+| POST    | Create new data            | Create         |
+| PUT     | Replace existing data      | Update         |
+| PATCH   | Partially update data      | Update         |
+| DELETE  | Remove data                | Delete         |
+| HEAD    | Get headers only           | Read           |
+| OPTIONS | Discover supported methods | N/A            |
+
+
+
+
+Common HTTP Status Codes
+------------------------
+
+| Code | Meaning               |
+| ---- | --------------------- |
+| 200  | OK (Success)          |
+| 201  | Created               |
+| 301  | Moved Permanently     |
+| 302  | Redirect              |
+| 400  | Bad Request           |
+| 401  | Unauthorized          |
+| 403  | Forbidden             |
+| 404  | Not Found             |
+| 500  | Internal Server Error |
+| 503  | Service Unavailable   |
+
+
+
+Healthy Threshold: 3
+You selected:
+Healthy threshold = 3
+Meaning:
+The server must pass 3 consecutive health checks before AWS marks it healthy.
+Example
+Suppose a new server starts.
+Health check results:
+Success
+Success
+Success
+After the third success:
+Instance Status = Healthy
+Now traffic is allowed.
+Why?
+This prevents temporary successes from marking a broken server healthy.
+
+Unhealthy Threshold: 2
+You selected:
+Unhealthy threshold = 2
+Meaning:
+If the server fails 2 consecutive health checks, mark it unhealthy.
+
+
+
+
+
+
+what is meant by host based and path based routing:
+
+1. Host-Based Routing
+
+Host-based routing uses the Host header (domain name) to decide where to send traffic.
+
+| Host Name         | Target Group  |
+| ----------------- | ------------- |
+| company.com       | Web Servers   |
+| api.company.com   | API Servers   |
+| admin.company.com | Admin Servers |
+
+Example Request
+
+GET /
+Host: api.company.com
+ALB sees:
+Host = api.company.com
+and forwards traffic to:
+API Target Group
+
+2. Path-Based Routing
+Path-based routing uses the URL path to decide where to send traffic.
+Suppose all traffic uses the same domain:
+company.com
+but different paths.
+
+| Path      | Target Group    |
+| --------- | --------------- |
+| /products | Product Service |
+| /orders   | Order Service   |
+| /payments | Payment Service |
+
+Request 1:
+GET /products
+Host: company.com
+ALB routes to:
+Product Service
+
+
+Host-Based + Path-Based Together
+You can combine both.
+Example:
+| Host              | Path      | Destination   |
+| ----------------- | --------- | ------------- |
+| api.company.com   | /users/*  | User Service  |
+| api.company.com   | /orders/* | Order Service |
+| admin.company.com | /*        | Admin Service |
+
+
+
+Easy Way to Think About It
+Every HTTP request contains both:
+Host
+Path
+Example:
+https://www.amazon.com/orders
+contains:
+Host = www.amazon.com
+Path = /orders
+The difference is:
+Host-Based Routing
+ALB decision:
+Look at Host
+Ignore Path
+
+Path-Based Routing
+ALB decision:
+Look at Path
+Ignore Host (or Host is same for everyone)
+
+Combined Routing
+ALB decision:
+Look at Host
+AND
+Look at Path
+
+
+
+
+
+understanding of http protocol and TCP, UDP protocols and data transfer :
+------------------------------------------------------------------------
+
+1. What is HTTP Traffic?
+HTTP traffic is the actual web communication between a browser and a web server.
+
+2. What is TCP Traffic?
+TCP stands for:
+Transmission Control Protocol
+TCP is responsible for transporting data reliably.
+
+HTTP
+The letter:
+Dear Amazon,
+Show me my orders.
+
+TCP
+The courier company:
+Collect letter
+Transport letter
+Confirm delivery
+
+The letter is HTTP.
+The courier is TCP.
+
+
+Web Page
+When you open:
+https://amazon.com
+
+Protocol stack:
+
+HTTPS  (Layer 7)
+   ↓
+TCP    (Layer 4)
+   ↓
+IP     (Layer 3)
+
+
+Downloading an Image
+HTTPS  (Layer 7)
+   ↓
+TCP    (Layer 4)
+   ↓
+IP     (Layer 3)
+Same stack.
+
+Watching a YouTube Video
+HTTPS  (Layer 7)
+   ↓
+TCP    (Layer 4)
+   ↓
+IP     (Layer 3)
+Still the same stack.
+
+Zoom / Google Meet
+These real-time applications often use:
+WebRTC (Layer 7)
+   ↓
+UDP    (Layer 4)
+   ↓
+IP     (Layer 3)
+UDP is chosen because low latency is more important than perfect reliability.
+HTTP always uses a transport protocol (typically TCP). Whether the content is text, HTML, images, or video does not change the fact that HTTP traffic is carried by TCP.
+
+Easy Analogy
+Suppose:
+Layer 7
+The content:
+Letter
+Photo
+Video
+Document
+
+Layer 4
+The delivery company:
+TCP Courier
+or
+UDP Courier
+
+Whether the package contains:
+Letter
+Photo
+Video
+
+does not automatically determine the courier.
+The application designer chooses TCP or UDP based on requirements.
+
+
+HTTP contains: 
+URLs 
+Headers 
+Cookies 
+JSON 
+data 
+HTML pages 
+why it contains the above, we can ask any thing in browser
+
+HTTP does not limit what information can be exchanged. It only defines the format for exchanging information.
+HTTP doesn't care whether the data is:
+HTML
+JSON
+Image
+Video
+PDF
+Excel file
+Example 1: Requesting a Web Page
+You type:
+https://amazon.com
+Browser sends:
+GET /
+Host: amazon.com
+Server responds:
+<html>
+  <body>
+    Welcome
+  </body>
+</html>
+Here HTTP is carrying:
+HTML
+
+Example 2: Requesting Product Information
+Browser sends:
+GET /products/100
+Server responds:
+{
+  "id": 100,
+  "name": "Laptop",
+  "price": 50000
+}
+
+Here HTTP is carrying:
+JSON
+
+Example 3: Downloading a PDF
+Browser sends:
+GET /manual.pdf
+Server responds:
+PDF File
+Here HTTP is carrying:
+PDF
+
+Example 4: Downloading an Image
+Browser sends:
+GET /logo.png
+Server responds:
+PNG Image Data
+Here HTTP is carrying:
+Image
+
+Example 5: Watching a Video
+Browser sends:
+GET /movie.mp4
+Server responds:
+Video Data
+Here HTTP is carrying:
+Video
+Then Why Did I Mention URLs, Headers, Cookies?
+Because they are special parts of an HTTP message.
+
+For example:
+GET /orders HTTP/1.1
+Host: amazon.com
+Cookie: session=abc123
+User-Agent: Chrome
+
+Breakdown:
+
+GET            -> Method
+/orders        -> URL Path
+Host           -> Header
+Cookie         -> Cookie
+User-Agent     -> Header
+
+These help the server understand the request.
+
+Simple Analogy
+Suppose you order food.
+Address
+Restaurant Location
+Like:
+URL
+
+Instructions
+Extra spicy
+No onions
+Like:
+Headers
+
+Customer ID
+Customer Number
+Like:
+Cookie
+
+Actual Food
+Biryani
+Like:
+HTML
+JSON
+Image
+Video
+PDF
+
+
+
+
+
+
+
+explaination by chatgpt:
+Unlike ALB, NLB **does not support path-based or host-based routing**
+Then How Does an NLB Reach an Application?
+Option 1: One Application Behind the NLB
+Suppose:
+NLB
+  |
+  v
+Tomcat Server
+
+Application:
+http://10.0.1.10/WBIPROD/UI
+The NLB simply forwards TCP traffic to the server.
+Client
+   |
+   v
+NLB
+   |
+   v
+Tomcat
+The application server itself handles:
+/WBIPROD/UI
+The NLB doesn't care about the path.
+
+Option 2: Different Applications on Different Ports
+Example:
+Server
+├── App1 → Port 8080
+├── App2 → Port 8081
+├── App3 → Port 8082
+NLB listeners:
+NLB Port	Target
+80	App1 (8080)
+81	App2 (8081)
+82	App3 (8082)
+Users access:
+http://myserver:80
+http://myserver:81
+http://myserver:82
+Routing is based on ports, not paths.
+
+Option 3: NLB in Front of an ALB
+This is common in AWS.
+Internet
+    |
+    v
+NLB
+    |
+    v
+ALB
+    |
+    +--> /orders
+    |
+    +--> /products
+
+NLB handles:
+TCP
+TLS
+Static IPs
+
+ALB handles:
+Host-based routing
+Path-based routing
+
+
+
+Easy Analogy
+
+ALB
+Security guard asks:
+Which department?
+Orders?
+Products?
+Payments?
+and directs you accordingly.
+
+NLB
+Security guard only opens the gate:
+Go to Building A.
+Once inside, the building receptionist handles:
+Orders Department
+Products Department
+Payments Department
+
+ALB = Smart Load Balancer
+NLB = Fast Load Balancer
+
+example:
+You access:
+http://myapp.com/WBIPROD/UI
+The browser sends:
+GET /WBIPROD/UI HTTP/1.1
+Host: myapp.com
+The NLB receives the TCP connection.
+NLB says:
+I don't care about:
+/WBIPROD/UI
+Host: myapp.com
+I will just forward the TCP traffic to the backend server.
+The backend application receives the full HTTP request:
+GET /WBIPROD/UI HTTP/1.1
+Host: myapp.com
+and processes:
+/WBIPROD/UI
+
+A Network Load Balancer does not support host-based or path-based routing because it operates at Layer 4 and only inspects IP addresses, ports, and TCP/UDP information. 
+Applications behind an NLB are typically reached through a single backend service, different ports, or by allowing the backend application server itself to handle URL paths. 
+For advanced routing based on host names or URL paths, an Application Load Balancer is used
+
+
+What Does "Protocol-Agnostic" Mean?
+Agnostic means:
+"Doesn't care about the specific protocol or application."
+NLB doesn't care whether the application is:
+HTTP
+HTTPS
+SSH
+MySQL
+Redis
+Kafka
+Custom Application
+It only cares:
+Can I establish a TCP connection?
+
+
+
+
+
+Use **Elastic IPs** for static endpoint exposure ---->explaination
+for user access a website DNS name is sufficient if IP address change domain name will be same but in some cases we need only IP address, not domain name in that situation elastic ip is needed
+
+Elastic IP is not required for NLB either.
+It is optional, but NLB supports it when you need static IP addresses.
+Then Why Is Elastic IP Common with NLB?
+Because NLB is often used for applications that require a fixed IP address.
+Examples:
+Firewall Whitelisting
+A partner says:
+Tell us your IP address.
+We will allow it in our firewall.
+
+Banking Systems
+Many banks require:
+Allowed Source IP:
+13.233.100.50
+not:
+bank-app.company.com
+
+| Requirement                                    | Use                |
+| ---------------------------------------------- | ------------------ |
+| Users access a website                         | DNS name           |
+| Firewall whitelist required                    | Elastic IP         |
+| Partner asks for a fixed source/destination IP | Elastic IP         |
+| Public web application         
