@@ -84,3 +84,160 @@ Additional Notes
 * Unlike ALB, NLB **does not support path-based or host-based routing**
 * For internal applications, choose **internal scheme** instead of internet-facing
 
+
+
+
+explaination by chatgpt:
+Unlike ALB, NLB **does not support path-based or host-based routing**
+Then How Does an NLB Reach an Application?
+Option 1: One Application Behind the NLB
+Suppose:
+NLB
+  |
+  v
+Tomcat Server
+
+Application:
+http://10.0.1.10/WBIPROD/UI
+The NLB simply forwards TCP traffic to the server.
+Client
+   |
+   v
+NLB
+   |
+   v
+Tomcat
+The application server itself handles:
+/WBIPROD/UI
+The NLB doesn't care about the path.
+
+Option 2: Different Applications on Different Ports
+Example:
+Server
+├── App1 → Port 8080
+├── App2 → Port 8081
+├── App3 → Port 8082
+NLB listeners:
+NLB Port	Target
+80	App1 (8080)
+81	App2 (8081)
+82	App3 (8082)
+Users access:
+http://myserver:80
+http://myserver:81
+http://myserver:82
+Routing is based on ports, not paths.
+
+Option 3: NLB in Front of an ALB
+This is common in AWS.
+Internet
+    |
+    v
+NLB
+    |
+    v
+ALB
+    |
+    +--> /orders
+    |
+    +--> /products
+
+NLB handles:
+TCP
+TLS
+Static IPs
+
+ALB handles:
+Host-based routing
+Path-based routing
+
+
+
+Easy Analogy
+
+ALB
+Security guard asks:
+Which department?
+Orders?
+Products?
+Payments?
+and directs you accordingly.
+
+NLB
+Security guard only opens the gate:
+Go to Building A.
+Once inside, the building receptionist handles:
+Orders Department
+Products Department
+Payments Department
+
+ALB = Smart Load Balancer
+NLB = Fast Load Balancer
+
+example:
+You access:
+http://myapp.com/WBIPROD/UI
+The browser sends:
+GET /WBIPROD/UI HTTP/1.1
+Host: myapp.com
+The NLB receives the TCP connection.
+NLB says:
+I don't care about:
+/WBIPROD/UI
+Host: myapp.com
+I will just forward the TCP traffic to the backend server.
+The backend application receives the full HTTP request:
+GET /WBIPROD/UI HTTP/1.1
+Host: myapp.com
+and processes:
+/WBIPROD/UI
+
+A Network Load Balancer does not support host-based or path-based routing because it operates at Layer 4 and only inspects IP addresses, ports, and TCP/UDP information. 
+Applications behind an NLB are typically reached through a single backend service, different ports, or by allowing the backend application server itself to handle URL paths. 
+For advanced routing based on host names or URL paths, an Application Load Balancer is used
+
+
+What Does "Protocol-Agnostic" Mean?
+Agnostic means:
+"Doesn't care about the specific protocol or application."
+NLB doesn't care whether the application is:
+HTTP
+HTTPS
+SSH
+MySQL
+Redis
+Kafka
+Custom Application
+It only cares:
+Can I establish a TCP connection?
+
+
+
+
+
+Use **Elastic IPs** for static endpoint exposure ---->explaination
+for user access a website DNS name is sufficient if IP address change domain name will be same but in some cases we need only IP address, not domain name in that situation elastic ip is needed
+
+Elastic IP is not required for NLB either.
+It is optional, but NLB supports it when you need static IP addresses.
+Then Why Is Elastic IP Common with NLB?
+Because NLB is often used for applications that require a fixed IP address.
+Examples:
+Firewall Whitelisting
+A partner says:
+Tell us your IP address.
+We will allow it in our firewall.
+
+Banking Systems
+Many banks require:
+Allowed Source IP:
+13.233.100.50
+not:
+bank-app.company.com
+
+| Requirement                                    | Use                |
+| ---------------------------------------------- | ------------------ |
+| Users access a website                         | DNS name           |
+| Firewall whitelist required                    | Elastic IP         |
+| Partner asks for a fixed source/destination IP | Elastic IP         |
+| Public web application                         | DNS name (usually) |
