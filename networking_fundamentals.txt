@@ -448,4 +448,363 @@ Summary Table
 | Network Address   | 172.16.0.0    |
 | First Host        | 172.16.0.1    |
 | Last Host         | 172.16.15.254 |
-| Broadcast Address | 172.1
+| Broadcast Address | 172.16.15.255
+
+
+
+
+
+
+A network is a group of devices that share the same network portion of their IP addresses, as determined by the subnet mask. 
+The network is identified by a network address (such as 192.168.1.0/24), and all hosts within that network can communicate directly without requiring a router.
+
+A network is a group of devices that share the same network portion of their IP address.
+example:
+| Device  | IP Address   | Mask |
+| ------- | ------------ | ---- |
+| PC1     | 192.168.1.10 | /24  |
+| PC2     | 192.168.1.20 | /24  |
+| Printer | 192.168.1.50 | /24  |
+All belong to:
+192.168.1.0/24
+This is called a network.
+
+How Is a Network Calculated?
+IP Address
+AND
+Subnet Mask
+
+Example:
+192.168.1.10
+AND
+255.255.255.0
+Result:
+192.168.1.0
+
+Network Address
+192.168.1.0
+Represents:
+The entire network
+Not a specific device.
+Host Address
+192.168.1.10
+Represents:
+A specific device
+inside that network.
+
+main purpose of subnet masks.
+Scenario
+You have two computers:
+PC1
+IP Address : 192.168.1.10
+Mask       : 255.255.255.0 (/24)
+PC2
+IP Address : 192.168.1.20
+Mask       : 255.255.255.0 (/24)
+
+What Does PC1 Need to Know?
+Suppose PC1 wants to send data to:
+192.168.1.20
+PC1 first asks:
+"Is 192.168.1.20 in my network or in another network?"
+To answer this, PC1 calculates the network address.
+Calculate PC1's Network
+192.168.1.10
+AND
+255.255.255.0
+=
+192.168.1.0
+So PC1 belongs to network:
+192.168.1.0/24
+Calculate PC2's Network
+192.168.1.20
+AND
+255.255.255.0
+=
+192.168.1.0
+So PC2 also belongs to:
+192.168.1.0/24
+Compare the Results
+
+PC1 Network:
+192.168.1.0
+PC2 Network:
+192.168.1.0
+Same network!
+
+What Happens Next?
+PC1 says:
+The destination is in my network.
+I can send directly.
+So PC1 sends an ARP request:
+Who has 192.168.1.20?
+PC2 replies:
+I am 192.168.1.20
+My MAC address is AA:BB:CC:DD
+Then PC1 sends the data directly to PC2.
+No Router Needed
+
+Communication path:
+PC1
+ |
+Switch
+ |
+PC2
+
+The router is not involved.
+
+
+
+
+What is Bitwise AND?
+AND is a logical operation that compares two bits.
+A bit can only be:
+0
+1
+When we compare them, we get a result according to the AND table.
+| Bit A | Bit B | A AND B |
+| ----- | ----- | ------- |
+| 0     | 0     | 0       |
+| 0     | 1     | 0       |
+| 1     | 0     | 0       |
+| 1     | 1     | 1       |
+
+Why Is It Called "Bitwise"?
+Because the operation is performed:
+bit by bit
+
+need of subnet mask:
+---------------------
+Any device that processes IP addresses
+This includes:
+Your computer (Windows/Linux/Mac)
+Routers
+Switches with Layer 3 capabilities
+Firewalls
+Servers
+EC2 instances
+Mobile phones
+Example
+Your laptop:
+
+IP Address = 192.168.1.10
+Mask       = 255.255.255.0
+When you try to open:
+192.168.1.20
+your laptop itself first checks:
+Is 192.168.1.20 in my network?
+The router is not involved yet.
+What Does the Laptop Calculate?
+Your laptop calculates:
+192.168.1.10
+AND
+255.255.255.0
+=
+192.168.1.0
+Then:
+192.168.1.20
+AND
+255.255.255.0
+=
+192.168.1.0
+Same network.
+So the laptop decides:
+I can send directly.
+The packet never reaches the router.
+
+When Does the Router Get Involved?
+Suppose the destination is:
+192.168.2.20
+Now the laptop calculates:
+192.168.2.20
+AND
+255.255.255.0
+=
+192.168.2.0
+Compare:
+My Network          = 192.168.1.0
+Destination Network = 192.168.2.0
+Different networks.
+Now the laptop decides:
+I need a router.
+and sends the packet to the default gateway (router).
+So Who Uses the Subnet Mask?
+1. End Devices (PCs, Servers, Phones)
+To determine:
+Same network?
+or
+Different network?
+2. Routers
+To determine:
+Which network does this packet belong to?
+Which route should I use?
+3. Firewalls
+To determine:
+Allow traffic from 10.0.0.0/16?
+Block traffic from 192.168.1.0/24?
+
+
+
+
+
+
+
+
+
+
+A computer is made of billions of tiny electronic switches called transistors.
+A transistor behaves like a light switch.
+Switch ON
+Switch OFF
+What is Voltage?
+Voltage is like electrical pressure.
+
+
+
+how data is stored in computer:
+
+Easy Analogy
+HDD
+Think of a notebook.
+Information stored as ink on paper
+The pen (electronics) uses transistors, but the data is on the paper (magnetic platter).
+
+SSD
+Think of an electronic whiteboard.
+Information stored electronically
+
+
+how on and off condition remains same in transistor even after shut down
+
+Case 1: CPU Transistors
+Suppose a transistor is inside the CPU.
+When power is ON:
+Voltage Present
+The transistor can be:
+ON  (1)
+OFF (0)
+When you shut down the computer:
+Power OFF
+There is no voltage.
+Therefore:
+All transistor states disappear
+The CPU does not remember its previous ON/OFF states.
+
+Case 2: RAM
+RAM behaves similarly.
+Suppose RAM contains:
+A = 01000001
+When power is removed:
+RAM loses everything
+This is why RAM is called:
+Volatile Memory
+because it forgets data when power is lost.
+
+Case 3: SSD
+An SSD is different.
+It uses a special transistor called a:
+Floating-Gate Transistor
+or
+Charge-Trap Transistor
+How SSD Remembers Data
+Imagine a tiny bucket.
+Store 1
+Electron Charge Stored
+Result:
+1
+Store 0
+No Charge Stored
+Result:
+0
+The charge remains trapped even after power is removed.
+So:
+Power OFF
+↓
+Charge still trapped
+↓
+Data remains
+This is why SSDs are called:
+Non-Volatile Storage
+
+Case 4: HDD
+Hard disks don't rely on transistor states for data storage.
+They store data magnetically.
+Example:
+North-South magnetic direction → 1
+South-North magnetic direction → 0
+Even after power is removed:
+Magnetization remains
+So data remains.
+Analogy
+
+CPU / RAM
+Like writing on a whiteboard with invisible ink:
+Power ON  → Visible
+Power OFF → Gone
+
+SSD
+Like writing on paper:
+Power ON  → Written
+Power OFF → Still Written
+
+HDD
+Like placing magnets on a fridge:
+Power ON  → Magnets there
+Power OFF → Magnets still there
+
+Why Does RAM Forget?
+A RAM cell stores data using tiny electrical charges.
+Example:
+Capacitor Charged     → 1
+Capacitor Discharged  → 0
+Without power:
+Charge leaks away
+and the data disappears.
+
+Why Does SSD Remember?
+SSD cells trap electrons inside an insulated region.
+The electrons cannot easily escape.
+So:
+Stored today
+can remain stored for years without power.
+
+
+
+
+
+
+
+
+hwo transistors are manufactured:
+Modern transistors are manufactured using photolithography, where patterns are projected onto silicon wafers using highly precise light-based processes, 
+allowing billions of microscopic transistors to be created simultaneously with nanometer-scale accuracy.
+
+
+
+
+
+
+when I type A what actually happens in computer
+Finger
+  ↓
+Keyboard Key
+  ↓
+Electrical Signal
+  ↓
+Scan Code
+  ↓
+Operating System
+  ↓
+ASCII 65
+  ↓
+Binary 01000001
+  ↓
+Stored in RAM
+  ↓
+CPU Processes
+  ↓
+Graphics System
+  ↓
+Pixels on Screen
+  ↓
+You See "A"
