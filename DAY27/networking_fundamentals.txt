@@ -458,6 +458,67 @@ Summary Table
 
 
 
+What is Block Size?
+Block size tells you how many IP addresses belong to one subnet before the next subnet starts.
+Block size = the jump between subnet network addresses.
+The block size is the number of IP addresses in each subnet increment within an octet. It is calculated using the shortcut:
+Block Size = 256 − Mask Value
+where the mask value is the subnet mask octet that is neither 255 nor 0. The block size helps determine subnet boundaries and IP address ranges.
+Example 1
+Subnet mask:
+255.255.255.192
+Block size:
+256 - 192 = 64
+Therefore networks start at:
+192.168.1.0
+192.168.1.64
+192.168.1.128
+192.168.1.192
+Notice the jump:
+0 → 64 → 128 → 192
+The jump is:
+64
+That's the block size.
+
+Common Block Sizes
+| Mask Octet | Binary   | Block Size |
+| ---------- | -------- | ---------- |
+| 128        | 10000000 | 128        |
+| 192        | 11000000 | 64         |
+| 224        | 11100000 | 32         |
+| 240        | 11110000 | 16         |
+| 248        | 11111000 | 8          |
+| 252        | 11111100 | 4          |
+| 254        | 11111110 | 2          |
+
+
+
+What Are the Other Values Inside the Block?
+Take:
+
+172.16.0.0/20
+Inside this network you have addresses like:
+172.16.0.1
+172.16.0.2
+172.16.0.3
+...
+172.16.5.10
+...
+172.16.15.254
+These are host addresses (devices).
+Examples:
+172.16.0.10   → EC2 Instance
+172.16.2.20   → Database Server
+172.16.10.50  → Application Server
+They are not separate networks.
+They belong to the same network:
+
+
+
+
+
+
+
 
 A network is a group of devices that share the same network portion of their IP addresses, as determined by the subnet mask. 
 The network is identified by a network address (such as 192.168.1.0/24), and all hosts within that network can communicate directly without requiring a router.
@@ -651,6 +712,18 @@ Block traffic from 192.168.1.0/24?
 
 
 
+Quick Trick for Common Masks
+Memorize these binary-to-decimal values:
+| Binary   | Decimal |
+| -------- | ------- |
+| 10000000 | 128     |
+| 11000000 | 192     |
+| 11100000 | 224     |
+| 11110000 | 240     |
+| 11111000 | 248     |
+| 11111100 | 252     |
+| 11111110 | 254     |
+| 11111111 | 255     |
 
 
 
