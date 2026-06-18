@@ -1,0 +1,1181 @@
+# Networking Fundamentals
+
+## 1. IPv4 vs IPv6
+
+| Feature                           | IPv4                                    | IPv6                                         |
+| --------------------------------- | --------------------------------------- | -------------------------------------------- |
+| Address Length                    | 32-bit                                  | 128-bit                                      |
+| Address Format                    | Decimal (e.g., `192.168.1.1`)           | Hexadecimal (e.g., `2001:db8::ff00:42:8329`) |
+| Address Space                     | ~4.3 billion addresses                  | ~340 undecillion addresses                   |
+| Header Complexity                 | Simple                                  | More complex but efficient                   |
+| Broadcast                         | Supported                               | Not supported (uses multicast instead)       |
+| Security                          | No built-in encryption                  | Integrated IPSec for security                |
+| NAT (Network Address Translation) | Commonly used due to address exhaustion | Not needed due to large address space        |
+
+
+### Key Differences:
+- IPv6 provides a significantly larger address space.
+- IPv6 eliminates NAT by providing enough addresses for all devices.
+- IPv6 has built-in security features like IPSec.
+- IPv6 uses more efficient packet processing.
+
+---
+
+binary: 0,1
+octal: 0 to 7
+decimal: 0 to 9
+hexa decimal: 0 to F
+Hexadecimal uses:
+0 1 2 3 4 5 6 7 8 9 A B C D E F
+
+| Hex | Decimal |
+| --- | ------- |
+| 0   | 0       |
+| 1   | 1       |
+| 2   | 2       |
+| 3   | 3       |
+| 4   | 4       |
+| 5   | 5       |
+| 6   | 6       |
+| 7   | 7       |
+| 8   | 8       |
+| 9   | 9       |
+| A   | 10      |
+| B   | 11      |
+| C   | 12      |
+| D   | 13      |
+| E   | 14      |
+| F   | 15      |
+
+
+Why A, B, C, D, E, F?
+After 9 we need six more symbols:
+
+10 → A
+11 → B
+12 → C
+13 → D
+14 → E
+15 → F
+
+
+binary to decimal conversion:
+
+Example: Convert 10 to Binary
+Keep dividing by 2 and write down the remainder.
+
+| Division | Quotient | Remainder |
+| -------- | -------- | --------- |
+| 10 ÷ 2   | 5        | 0         |
+| 5 ÷ 2    | 2        | 1         |
+| 2 ÷ 2    | 1        | 0         |
+| 1 ÷ 2    | 0        | 1         |
+
+
+
+decimal to binary convertion:
+
+Convert 11110000 to Decimal
+
+| Binary | 1   | 1  | 1  | 1  | 0 | 0 | 0 | 0 |
+| ------ | --- | -- | -- | -- | - | - | - | - |
+| Value  | 128 | 64 | 32 | 16 | 8 | 4 | 2 | 1 |
+
+Add:
+
+128 + 64 + 32 + 16
+= 240
+
+
+
+
+
+
+## 2. IP Address Classes
+
+| Class | First Octet Range | Default Subnet Mask | CIDR | Number of Hosts                      |
+| ----- | ----------------- | ------------------- | ---- | ------------------------------------ |
+| A     | 1 – 126           | 255.0.0.0           | /8   | ~16 million per network (16,777,214) |
+| B     | 128 – 191         | 255.255.0.0         | /16  | ~65,000 per network (65,534)         |
+| C     | 192 – 223         | 255.255.255.0       | /24  | 254 per network                      |
+| D     | 224 – 239         | N/A                 | N/A  | Multicast Addresses                  |
+| E     | 240 – 255         | N/A                 | N/A  | Reserved for Experimental Use        |
+
+Private IPv4 Address Ranges
+| Class | Private IP Range              |
+| ----- | ----------------------------- |
+| A     | 10.0.0.0 – 10.255.255.255     |
+| B     | 172.16.0.0 – 172.31.255.255   |
+| C     | 192.168.0.0 – 192.168.255.255 |
+
+Most commonly used private ranges in AWS, home networks, and enterprises:
+10.0.0.0/8
+172.16.0.0/12
+192.168.0.0/16
+
+- **Class A:** Large organizations and ISPs.
+- **Class B:** Medium-sized businesses and universities.
+- **Class C:** Small businesses and home networks.
+- **Class D:** Used for **Multicasting** (not for host assignments).
+- **Class E:** Reserved for future use or research.
+
+---
+
+## 3. Public vs Private IPs
+
+### **Private IP Ranges (Non-Routable on the Internet)**
+Private IPv4 Address Ranges
+| Class | Private IP Range              |
+| ----- | ----------------------------- |
+| A     | 10.0.0.0 – 10.255.255.255     |
+| B     | 172.16.0.0 – 172.31.255.255   |
+| C     | 192.168.0.0 – 192.168.255.255 
+
+mostly we use calss C in company
+
+- **Private IPs**: Used within local networks (LANs).
+- **Public IPs**: Assigned by ISPs and used to access the internet.
+
+Why Private IPs?
+- They help conserve IPv4 addresses.
+- They require **NAT** (Network Address Translation) to connect to the internet.
+
+---
+
+4. CIDR (Classless Inter-Domain Routing)
+CIDR replaces traditional class-based addressing by allowing more flexible subnetting.
+
+- Instead of **Class A (255.0.0.0)**, CIDR allows **10.0.0.0/8**.
+- Instead of **Class C (255.255.255.0)**, CIDR allows **192.168.1.0/24**.
+
+ **CIDR Notation**
+
+| CIDR | Subnet Mask   | Number of Hosts |
+| ---- | ------------- | --------------- |
+| /8   | 255.0.0.0     | 16.7M           |
+| /16  | 255.255.0.0   | 65K             |
+| /24  | 255.255.255.0 | 256             |
+
+
+CIDR allows for:
+- **Efficient allocation** of IP addresses.
+- **Smaller subnets** to reduce waste.
+- **Aggregation** of routes (route summarization).
+
+
+claculating numer of IP addresses 
+68.0.0.0/30 
+two power 32-30
+68.0.0.0/n
+two power 32-n
+
+
+
+5. Subnetting
+**Why Subnet?**
+- Reduces **network congestion**.
+- Enhances **security** by isolating networks.
+- Efficient use of **IP addresses**.
+
+### **Subnet Mask Table**
+| Subnet Mask     | CIDR | Number of Hosts |
+| --------------- | ---- | --------------- |
+| 255.0.0.0       | /8   | 16M             |
+| 255.255.0.0     | /16  | 65K             |
+| 255.255.255.0   | /24  | 256             |
+| 255.255.255.128 | /25  | 128             |
+| 255.255.255.192 | /26  | 64              |
+| 255.255.255.224 | /27  | 32              |
+| 255.255.255.240 | /28  | 16              |
+| 255.255.255.248 | /29  | 8               |
+| 255.255.255.252 | /30  | 4               |
+
+
+Each subnet has:
+1. **Network Address** (First address, e.g., 192.168.1.0)
+2. **Broadcast Address** (Last address, e.g., 192.168.1.255)
+3. **Usable Host Addresses** (Between network and broadcast)
+
+### **AWS Reserved IPs in Each Subnet**
+AWS reserves 5 IP addresses (first 4 and last 1) in each subnet. These IPs cannot be assigned to an instance.
+
+Example: For CIDR block `10.0.0.0/24`, the reserved IPs are:
+
+- `10.0.0.0`: Network address
+- `10.0.0.1`: Reserved by AWS for the VPC router
+- `10.0.0.2`: Reserved by AWS for mapping to Amazon-provided DNS
+- `10.0.0.3`: Reserved by AWS for future use
+- `10.0.0.255`: Network broadcast address (AWS does not support broadcast in a VPC, so this is reserved)
+
+  ### **Loopback Address Explanation**
+
+#### **What is a Loopback Address?**
+A **loopback address** is a special IP address that is used to test network interfaces on a local machine. Instead of sending packets over a physical network, loopback addresses allow data to be sent and received within the same device.
+
+#### **IPv4 Loopback Address**
+- The reserved loopback address in IPv4 is **127.0.0.1**.
+- The entire **127.0.0.0/8** range (127.0.0.1 to 127.255.255.255) is designated for loopback, but **127.0.0.1** is the most commonly used.
+- Packets sent to this address never leave the device; instead, they are internally routed back.
+
+#### **IPv6 Loopback Address**
+- The loopback address in IPv6 is **::1** (short for `0000:0000:0000:0000:0000:0000:0000:0001`).
+- Just like in IPv4, any packet sent to **::1** remains within the local device.
+
+#### **Uses of Loopback Addresses**
+1. **Testing Network Stack:**  
+   - You can ping `127.0.0.1` (or `::1` for IPv6) to check if the TCP/IP stack is functioning properly on your system.
+   
+   ```bash
+   ping 127.0.0.1   # For IPv4
+   ping ::1         # For IPv6
+   ```
+
+2. **Running Local Servers:**  
+   - Web servers, database servers, and application servers often bind to `127.0.0.1` or `::1` to serve requests only from the local machine.
+
+3. **Security & Isolation:**  
+   - By binding services to the loopback address, you can prevent external access while allowing local communication.
+
+4. **Software Development & Testing:**  
+   - Developers use loopback addresses to test applications without requiring an actual network connection.
+
+#### **Key Characteristics of Loopback Addresses**
+- Packets sent to loopback addresses **never leave** the local device.
+- They are **not routable** outside the host.
+- **No external network traffic** is generated, making them useful for debugging and testing.
+- In IPv4, **only 127.x.x.x is reserved** for loopback, while in IPv6, only **::1** is designated.
+
+
+### **AWS VPC Setup Steps**
+
+1. **Create a VPC** with address range `10.55.0.0/16` in region `us-east-1`.
+2. **Enable DNS Hostnames** on the VPC.
+3. **Create three subnets** with the following CIDR ranges:
+   - `10.55.1.0/24`
+   - `10.55.2.0/24`
+   - `10.55.3.0/24`
+4. **Enable Public IP** on subnets.
+5. **Create a routing table** and add the subnets to it.   NOTE: pls make RT as a main and delete old one
+6. **Create an IGW and attach to VPC**
+7. **Add routes** to the routing table.
+8. **Create a Linux server** and configure:
+   - Security Group (SG)
+   - Key Pair (for SSH access)
+9. **Connect to the Linux Server.**
+
+
+
+
+running notes:
+VPC is a region specific
+if we take any project min 6 subnets are present. max any number of subnets 
+architect decides how many machines 
+web applications should be placed in public subnet.
+depending of CIDR we launch number of instances.
+in AWS 5 IPs are reserved by default in each subnet
+suppose we want 200 machines in each subnet how can we do it go to DAVID CNET subnet calculator, click on devide if you want to reduce number of IP
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+explaination by chatgpt:
+
+Why Computers Use 0 and 1
+Inside a computer, electronic circuits have two stable states:
+Voltage Present    → 1
+Voltage Absent     → 0
+or
+Switch ON  → 1
+Switch OFF → 0
+That's why computers naturally work with binary.
+
+Binary Number System
+Computers use binary (base 2).
+In decimal (base 10), place values are:
+1000 100 10 1
+Example:
+345
+=
+3×100 + 4×10 + 5×1
+
+In binary (base 2), place values are:
+128 64 32 16 8 4 2 1
+These come from powers of 2:
+2⁷ 2⁶ 2⁵ 2⁴ 2³ 2² 2¹ 2⁰
+which are:
+128 64 32 16 8 4 2 1
+
+A binary digit (called a bit) can have only two values:
+0 = OFF
+1 = ON
+or
+0 = No
+1 = Yes
+or
+0 = Don't include this value
+1 = Include this value
+
+Example
+Suppose we have:
+10101000
+Place values:
+128 64 32 16 8 4 2 1
+Let's see what each bit means:
+1   0   1   0   1   0   0   0
+│   │   │   │   │   │   │   │
+128 64  32 16  8  4  2  1
+
+Interpretation:
+128 → ON  (1)
+64  → OFF (0)
+32  → ON  (1)
+16  → OFF (0)
+8   → ON  (1)
+4   → OFF (0)
+2   → OFF (0)
+1   → OFF (0)
+Add only the ON values:
+128 + 32 + 8
+= 168
+Therefore:
+10101000₂ = 168₁₀
+
+why 10.0.0.0 why not 592.658.582.652
+What is the maximum value of an octet?
+8 bits can store:
+00000000 = 0
+to
+11111111 = 255
+Therefore:
+Each octet can only be between 0 and 255
+Why?
+Because:
+2
+8
+gives:
+256 values
+which are:
+0 to 255
+
+classification:
+How the Ranges Are Derived
+
+| Binary     | Decimal | Class        |
+| ---------- | ------- | ------------ |
+| `00000001` | 1       | A (smallest) |
+| `01111110` | 126     | A (largest)  |
+| `10000000` | 128     | B (smallest) |
+| `10111111` | 191     | B (largest)  |
+| `11000000` | 192     | C (smallest) |
+| `11011111` | 223     | C (largest)  |
+| `11100000` | 224     | D (smallest) |
+| `11101111` | 239     | D (largest)  |
+| `11110000` | 240     | E (smallest) |
+| `11111111` | 255     | E (largest)  |
+
+| Class | Starts With (Binary) | First Octet Range | Purpose               |
+| ----- | -------------------- | ----------------- | --------------------- |
+| A     | `0xxxxxxx`           | 1 - 126           | Large networks        |
+| B     | `10xxxxxx`           | 128 - 191         | Medium networks       |
+| C     | `110xxxxx`           | 192 - 223         | Small networks        |
+| D     | `1110xxxx`           | 224 - 239         | Multicast             |
+| E     | `1111xxxx`           | 240 - 255         | Reserved/Experimental |
+
+
+
+
+How Does the First Octet Determine the Class? The first few bits of the first octet identify the class.
+
+| Class | First Bits |
+| ----- | ---------- |
+| A     | 0          |
+| B     | 10         |
+| C     | 110        |
+| D     | 1110       |
+| E     | 1111       |
+
+Example Class A First octet: 10 Binary: 00001010 Starts with: 0 Therefore: Class A
+Example Class B First octet: 172 Binary: 10101100 Starts with: 10 Therefore: Class B
+Example Class C First octet: 192 Binary: 11000000 Starts with: 110 Therefore: Class C
+Class D Range: 224 - 239 Used for: Multicast Example: 239.1.1.1 One sender can transmit to many receivers.
+Class E Range: 240 - 255 Reserved for: Research Experimentaluse Not used for normal hosts. Why Classes Are Mostly Historical Today Modern networks use: CIDR (Classless Inter-Domain Routing) 
+Examples: 192.168.1.0/24 10.0.0.0/20 172.16.0.0/18 Instead of relying on Class A/B/C. CIDR allows much more efficient use of IP addresses.
+
+Easy Memory Trick
+
+| Class | Default Mask | Network Bits | Host Bits |
+| ----- | ------------ | ------------ | --------- |
+| A     | /8           | 8            | 24        |
+| B     | /16          | 16           | 16        |
+| C     | /24          | 24           | 8         |
+
+
+what is mask
+The mask hides the host bits and reveals the network bits.
+IP:
+192.168.1.10
+
+Mask:
+255.255.255.0
+
+You cannot determine the subnet mask from the IP address alone.
+The subnet mask (or CIDR prefix) must also be provided.
+
+Why Do We Need a Mask?
+Suppose you have an IP address:
+192.168.1.10
+Question:
+Which part represents the network?
+Which part represents the host (device)?
+The IP address alone doesn't tell us.
+So we use a subnet mask.
+
+10.0.0.15/8 Mask is 255.0.0.0 how
+The /8 means:
+First 8 bits are Network bits
+So we need a subnet mask with:
+8 ones
+followed by
+24 zeros
+Step 2: Write the Binary Mask
+11111111.00000000.00000000.00000000
+Count the 1s:
+11111111 = 8 ones
+Total:
+8 network bits
+Therefore:
+/8
+Step 3: Convert Binary to Decimal
+First octet:
+11111111
+Calculate:
+128 + 64 + 32 + 16 + 8 + 4 + 2 + 1
+= 255
+Remaining octets:
+00000000 = 0
+Therefore:
+11111111.00000000.00000000.00000000
+=
+255.0.0.0
+Final Result
+/8
+=
+255.0.0.0
+Apply It to Your IP
+IP:
+10.0.0.15/8
+Mask:
+255.0.0.0
+Binary:
+IP:
+00001010.00000000.00000000.00001111
+Mask:
+11111111.00000000.00000000.00000000
+The first 8 bits belong to the network:
+00001010
+which is:
+10
+So:
+Network = 10.0.0.0
+Host    = 0.0.0.15
+
+
+Example 1: /24
+IP:   192.168.1.10
+Mask: 255.255.255.0
+Network:
+192.168.1.0
+Host:
+10
+
+Example 2: /16
+IP:   192.168.1.10
+Mask: 255.255.0.0
+Network:
+192.168.0.0
+Host:
+1.10
+Same IP, different network!
+
+Example 3: /25
+IP:   192.168.1.10
+Mask: 255.255.255.128
+Network:
+192.168.1.0
+Usable hosts:
+192.168.1.1
+to
+192.168.1.126
+
+
+
+
+CIDR:
+
+CIDR stands for:
+Classless Inter-Domain Routing
+CIDR is the modern way of defining networks and subnet sizes.
+It replaced the old Class A, B, and C system because the class system wasted many IP addresses.
+
+The masking system did not change. What changed was the way networks are allocated and represented.
+Think of it this way:
+Old (Classful Networking)
+The network size was determined by the IP class.
+Class	Default Mask
+A	255.0.0.0 (/8)
+B	255.255.0.0 (/16)
+C	255.255.255.0 (/24)
+Example:
+192.168.1.10
+People automatically assumed:
+255.255.255.0
+because it was a Class C address.
+Problem
+Suppose a company needs:
+500 hosts
+Class C:
+254 hosts
+Too small.
+Class B:
+65,534 hosts
+Too large.
+Huge waste of IP addresses.
+
+Modern (CIDR)
+CIDR removed the restriction that networks must be only:
+/8
+/16
+/24
+
+Now you can use:
+/20
+/21
+/22
+/23
+/25
+/26
+/27
+...
+
+whatever size you need.
+Example:
+10.0.0.0/20
+Mask:
+255.255.240.0
+This would have been impossible in the old classful system.
+
+
+If the subnet mask concept stayed the same, how did networking change from Class A/B/C to CIDR?
+The answer is:
+Routers stopped assuming the mask based on the IP class and started carrying the mask information explicitly.
+
+Old Classful Networking
+Suppose you saw:
+192.168.1.10
+Router automatically thought:
+192 = Class C
+Class C = /24
+Mask = 255.255.255.0
+No need to specify the mask.
+The router assumed it.
+
+CIDR Idea
+Instead of saying:
+192.x.x.x = always /24
+CIDR says:
+Don't assume anything.
+Always specify the prefix.
+Examples:
+192.168.1.0/23
+192.168.1.0/25
+192.168.1.0/27
+All are valid.
+
+What Changed in Routers?
+Old router:
+IP starts with 192
+      ↓
+Must be Class C
+      ↓
+Must be /24
+
+CIDR router:
+Network = 192.168.1.0/27
+The router stores:
+Network Address
++
+Prefix Length
+and no longer cares about classes.
+
+Example
+Classful world:
+172.16.0.0
+Automatically:
+Class B
+Mask = /16
+
+CIDR world:
+172.16.0.0/20
+Mask:
+255.255.240.0
+Perfectly valid.
+Even though it is not a Class B default mask.
+
+What Changed?
+Before
+The mask was implied by the class.
+10.x.x.x     → /8
+172.x.x.x    → /16
+192.x.x.x    → /24
+
+After CIDR
+The mask is explicitly specified.
+10.0.0.0/22
+10.0.0.0/19
+10.0.0.0/27
+No assumptions.
+
+CIDR became possible because routers stopped deriving the subnet mask from the IP address class and instead started using an explicitly provided prefix length (such as /20 or /27). 
+The subnet mask itself did not change; only the rule for determining it changed.
+
+
+
+172.16.0.0/20 how many IP are possible and their range 
+
+Let's calculate it step by step.
+Given:
+172.16.0.0/20
+Step 1: Find Host Bits
+IPv4 has:
+32 bits
+CIDR:
+/20
+So:
+Network bits = 20
+Host bits    = 12
+because:
+32 - 20 = 12
+
+Step 2: Total IP Addresses
+Formula:
+2
+12
+Result:
+4096 IP addresses
+
+Step 3: Usable Hosts
+Reserve:
+1 Network Address
+1 Broadcast Address
+Formula:
+2
+12
+−2
+Result:
+4094 usable hosts
+
+Step 4: Find the Subnet Mask
+CIDR:
+/20
+Binary:
+11111111.11111111.11110000.00000000
+Decimal:
+255.255.240.0
+
+Step 5: Find the Range
+Mask:
+255.255.240.0
+Notice the third octet:
+240
+Binary:
+11110000
+The block size is:
+256 - 240 = 16
+Therefore networks increase by 16 in the third octet:
+172.16.0.0
+172.16.16.0
+172.16.32.0
+...
+Since your network starts at:
+172.16.0.0
+it covers up to:
+172.16.15.255
+Complete Range
+Network Address
+172.16.0.0
+First Usable Host
+172.16.0.1
+Last Usable Host
+172.16.15.254
+Broadcast Address
+172.16.15.255
+Visual Representation
+Network:
+172.16.0.0/20
+
+Range:
+172.16.0.0
+    ↓
+172.16.15.255
+
+Third octet ranges from:
+
+0 to 15
+
+Fourth octet ranges from:
+0 to 255
+Summary Table
+| Item              | Value         |
+| ----------------- | ------------- |
+| Network           | 172.16.0.0/20 |
+| Subnet Mask       | 255.255.240.0 |
+| Total IPs         | 4096          |
+| Usable Hosts      | 4094          |
+| Network Address   | 172.16.0.0    |
+| First Host        | 172.16.0.1    |
+| Last Host         | 172.16.15.254 |
+| Broadcast Address | 172.16.15.255 |
+
+
+
+What is Block Size?
+Block size tells you how many IP addresses belong to one subnet before the next subnet starts.
+Block size = the jump between subnet network addresses.
+The block size is the number of IP addresses in each subnet increment within an octet. It is calculated using the shortcut:
+Block Size = 256 − Mask Value
+where the mask value is the subnet mask octet that is neither 255 nor 0. The block size helps determine subnet boundaries and IP address ranges.
+Example 1
+Subnet mask:
+255.255.255.192
+Block size:
+256 - 192 = 64
+Therefore networks start at:
+192.168.1.0
+192.168.1.64
+192.168.1.128
+192.168.1.192
+Notice the jump:
+0 → 64 → 128 → 192
+The jump is:
+64
+That's the block size.
+
+Common Block Sizes
+| Mask Octet | Binary   | Block Size |
+| ---------- | -------- | ---------- |
+| 128        | 10000000 | 128        |
+| 192        | 11000000 | 64         |
+| 224        | 11100000 | 32         |
+| 240        | 11110000 | 16         |
+| 248        | 11111000 | 8          |
+| 252        | 11111100 | 4          |
+| 254        | 11111110 | 2          |
+
+
+
+What Are the Other Values Inside the Block?
+Take:
+
+172.16.0.0/20
+Inside this network you have addresses like:
+172.16.0.1
+172.16.0.2
+172.16.0.3
+...
+172.16.5.10
+...
+172.16.15.254
+These are host addresses (devices).
+Examples:
+172.16.0.10   → EC2 Instance
+172.16.2.20   → Database Server
+172.16.10.50  → Application Server
+They are not separate networks.
+They belong to the same network:
+
+
+
+
+
+
+
+
+A network is a group of devices that share the same network portion of their IP addresses, as determined by the subnet mask. 
+The network is identified by a network address (such as 192.168.1.0/24), and all hosts within that network can communicate directly without requiring a router.
+
+A network is a group of devices that share the same network portion of their IP address.
+example:
+| Device  | IP Address   | Mask |
+| ------- | ------------ | ---- |
+| PC1     | 192.168.1.10 | /24  |
+| PC2     | 192.168.1.20 | /24  |
+| Printer | 192.168.1.50 | /24  |
+All belong to:
+192.168.1.0/24
+This is called a network.
+
+How Is a Network Calculated?
+IP Address
+AND
+Subnet Mask
+
+Example:
+192.168.1.10
+AND
+255.255.255.0
+Result:
+192.168.1.0
+
+Network Address
+192.168.1.0
+Represents:
+The entire network
+Not a specific device.
+Host Address
+192.168.1.10
+Represents:
+A specific device
+inside that network.
+
+main purpose of subnet masks.
+Scenario
+You have two computers:
+PC1
+IP Address : 192.168.1.10
+Mask       : 255.255.255.0 (/24)
+PC2
+IP Address : 192.168.1.20
+Mask       : 255.255.255.0 (/24)
+
+What Does PC1 Need to Know?
+Suppose PC1 wants to send data to:
+192.168.1.20
+PC1 first asks:
+"Is 192.168.1.20 in my network or in another network?"
+To answer this, PC1 calculates the network address.
+Calculate PC1's Network
+192.168.1.10
+AND
+255.255.255.0
+=
+192.168.1.0
+So PC1 belongs to network:
+192.168.1.0/24
+Calculate PC2's Network
+192.168.1.20
+AND
+255.255.255.0
+=
+192.168.1.0
+So PC2 also belongs to:
+192.168.1.0/24
+Compare the Results
+
+PC1 Network:
+192.168.1.0
+PC2 Network:
+192.168.1.0
+Same network!
+
+What Happens Next?
+PC1 says:
+The destination is in my network.
+I can send directly.
+So PC1 sends an ARP request:
+Who has 192.168.1.20?
+PC2 replies:
+I am 192.168.1.20
+My MAC address is AA:BB:CC:DD
+Then PC1 sends the data directly to PC2.
+No Router Needed
+
+Communication path:
+PC1
+ |
+Switch
+ |
+PC2
+
+The router is not involved.
+
+
+
+
+What is Bitwise AND?
+AND is a logical operation that compares two bits.
+A bit can only be:
+0
+1
+When we compare them, we get a result according to the AND table.
+| Bit A | Bit B | A AND B |
+| ----- | ----- | ------- |
+| 0     | 0     | 0       |
+| 0     | 1     | 0       |
+| 1     | 0     | 0       |
+| 1     | 1     | 1       |
+
+Why Is It Called "Bitwise"?
+Because the operation is performed:
+bit by bit
+
+need of subnet mask:
+---------------------
+Any device that processes IP addresses
+This includes:
+Your computer (Windows/Linux/Mac)
+Routers
+Switches with Layer 3 capabilities
+Firewalls
+Servers
+EC2 instances
+Mobile phones
+Example
+Your laptop:
+
+IP Address = 192.168.1.10
+Mask       = 255.255.255.0
+When you try to open:
+192.168.1.20
+your laptop itself first checks:
+Is 192.168.1.20 in my network?
+The router is not involved yet.
+What Does the Laptop Calculate?
+Your laptop calculates:
+192.168.1.10
+AND
+255.255.255.0
+=
+192.168.1.0
+Then:
+192.168.1.20
+AND
+255.255.255.0
+=
+192.168.1.0
+Same network.
+So the laptop decides:
+I can send directly.
+The packet never reaches the router.
+
+When Does the Router Get Involved?
+Suppose the destination is:
+192.168.2.20
+Now the laptop calculates:
+192.168.2.20
+AND
+255.255.255.0
+=
+192.168.2.0
+Compare:
+My Network          = 192.168.1.0
+Destination Network = 192.168.2.0
+Different networks.
+Now the laptop decides:
+I need a router.
+and sends the packet to the default gateway (router).
+So Who Uses the Subnet Mask?
+1. End Devices (PCs, Servers, Phones)
+To determine:
+Same network?
+or
+Different network?
+2. Routers
+To determine:
+Which network does this packet belong to?
+Which route should I use?
+3. Firewalls
+To determine:
+Allow traffic from 10.0.0.0/16?
+Block traffic from 192.168.1.0/24?
+
+
+
+
+
+Quick Trick for Common Masks
+Memorize these binary-to-decimal values:
+| Binary   | Decimal |
+| -------- | ------- |
+| 10000000 | 128     |
+| 11000000 | 192     |
+| 11100000 | 224     |
+| 11110000 | 240     |
+| 11111000 | 248     |
+| 11111100 | 252     |
+| 11111110 | 254     |
+| 11111111 | 255     |
+
+
+
+
+
+A computer is made of billions of tiny electronic switches called transistors.
+A transistor behaves like a light switch.
+Switch ON
+Switch OFF
+What is Voltage?
+Voltage is like electrical pressure.
+
+
+
+how data is stored in computer:
+
+Easy Analogy
+HDD
+Think of a notebook.
+Information stored as ink on paper
+The pen (electronics) uses transistors, but the data is on the paper (magnetic platter).
+
+SSD
+Think of an electronic whiteboard.
+Information stored electronically
+
+
+how on and off condition remains same in transistor even after shut down
+
+Case 1: CPU Transistors
+Suppose a transistor is inside the CPU.
+When power is ON:
+Voltage Present
+The transistor can be:
+ON  (1)
+OFF (0)
+When you shut down the computer:
+Power OFF
+There is no voltage.
+Therefore:
+All transistor states disappear
+The CPU does not remember its previous ON/OFF states.
+
+Case 2: RAM
+RAM behaves similarly.
+Suppose RAM contains:
+A = 01000001
+When power is removed:
+RAM loses everything
+This is why RAM is called:
+Volatile Memory
+because it forgets data when power is lost.
+
+Case 3: SSD
+An SSD is different.
+It uses a special transistor called a:
+Floating-Gate Transistor
+or
+Charge-Trap Transistor
+How SSD Remembers Data
+Imagine a tiny bucket.
+Store 1
+Electron Charge Stored
+Result:
+1
+Store 0
+No Charge Stored
+Result:
+0
+The charge remains trapped even after power is removed.
+So:
+Power OFF
+↓
+Charge still trapped
+↓
+Data remains
+This is why SSDs are called:
+Non-Volatile Storage
+
+Case 4: HDD
+Hard disks don't rely on transistor states for data storage.
+They store data magnetically.
+Example:
+North-South magnetic direction → 1
+South-North magnetic direction → 0
+Even after power is removed:
+Magnetization remains
+So data remains.
+Analogy
+
+CPU / RAM
+Like writing on a whiteboard with invisible ink:
+Power ON  → Visible
+Power OFF → Gone
+
+SSD
+Like writing on paper:
+Power ON  → Written
+Power OFF → Still Written
+
+HDD
+Like placing magnets on a fridge:
+Power ON  → Magnets there
+Power OFF → Magnets still there
+
+Why Does RAM Forget?
+A RAM cell stores data using tiny electrical charges.
+Example:
+Capacitor Charged     → 1
+Capacitor Discharged  → 0
+Without power:
+Charge leaks away
+and the data disappears.
+
+Why Does SSD Remember?
+SSD cells trap electrons inside an insulated region.
+The electrons cannot easily escape.
+So:
+Stored today
+can remain stored for years without power.
+
+
+
+
+
+
+
+
+hwo transistors are manufactured:
+Modern transistors are manufactured using photolithography, where patterns are projected onto silicon wafers using highly precise light-based processes, 
+allowing billions of microscopic transistors to be created simultaneously with nanometer-scale accuracy.
+
+
+
+
+
+
+when I type A what actually happens in computer
+Finger
+  ↓
+Keyboard Key
+  ↓
+Electrical Signal
+  ↓
+Scan Code
+  ↓
+Operating System
+  ↓
+ASCII 65
+  ↓
+Binary 01000001
+  ↓
+Stored in RAM
+  ↓
+CPU Processes
+  ↓
+Graphics System
+  ↓
+Pixels on Screen
+  ↓
+You See "A"
+
+
