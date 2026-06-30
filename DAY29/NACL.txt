@@ -460,8 +460,48 @@ if we want to deny only particular IP address for example my IP (to get your IP 
 if we want fast response we can add 80 port in outbound rule with low rule number compared to ephemeral port it is not wrong.
 there is no use of allowing outbound traffic without allowing inbound traffic.
 There is no need of giving NACL to private subnet as it is not exposing to internet. 
+we are not able to SSH to public instace because we didn't add rule for port 22 in NACL
+ping google.com. we are unable to ping.
+port 443 is used to get internet. protocl is ICMP-IPV4 protocol. prashanth unable to do it he allowed inbound traffic also in NACL to ping internet.
+
+how two AWS services commumicate without access key and secret key? we need to  create a role.
+goto access management, role for aws ec2, give S3 full accesss role name is S3 full access role. create role.
+goto EC2 attach the role. goto security and modify the IAM role and select S3 full access role.
+aws s3 buckets will show the availabe buckets
+create a bucket name test-kkdevops 
+now fire the command 
+aws s3 buckets
+bucket will be shown.
+
+launch an instance name application server, subnet is private subnet in same VPC, give the keypair, we don't want public IP launch instance. we cannot ssh to this instance. 
+cat penfile and copy the content.
+ssh the public subnet instance
+vi kkdevops.pem 
+paste the pem
+chmod 400 kkdevops.pem
+select the private instance and click connect copy the command and paste in CLI of jump host it will be connected
+now we are able to ping google.com. reason is private subnet instance has NAT gateway entry, and NAT gateway is present in public subnet, public subnet has internetgateway.
+if we delete the NAT there will be no internet
+if fire aws s3 ls 
+unable to list buckets
+now asign a role for this instance 
+goto instance--> actions--->security---> attch role s3 full access
+again try to list buckets
+failed to list
+so internet connection is mandatory
 
 
+go to VPC --> endpoints--->test-ep-s3---> aws service----> select service=com.amazonaws.ap.south1.s3----> select gateway interface----->select vpc--->select subnet(private subnet)---routetabel-->
+policy full access---> create end point
+now try list buckets
+we are able to list buckets without NAT
+create another end point
+select the ec2connect end point select vpc select default security group---> create the end point
+goto instances application server instance ----> connect using private IP
+
+we connected directly using endpoints with out jump server
+
+NACL rule limit by default 20 inbound and 20 out bound. maximum limit 40 inbound and 40 outbound. we have to request AWS for additional rules AWS will approve.
 
 
 
