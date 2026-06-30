@@ -368,10 +368,15 @@ These are the important points students should remember:
 * NACL is used as an additional security layer
 
 29. Short explanation for students
-Network ACL is a subnet-level firewall in AWS. It controls traffic entering and leaving the subnet. It is stateless, which means inbound and outbound rules must both be configured. It supports both allow and deny rules. Rules are evaluated in number order, and the lowest rule number has the highest priority. Default NACL allows all traffic, but a new custom NACL blocks everything until rules are added.
+Network ACL is a subnet-level firewall in AWS. It controls traffic entering and leaving the subnet. 
+It is stateless, which means inbound and outbound rules must both be configured. 
+It supports both allow and deny rules. Rules are evaluated in number order, and the lowest rule number has the highest priority.
+Default NACL allows all traffic, but a new custom NACL blocks everything until rules are added.
 
 30. Short explanation of Ephemeral ports for students
-Ephemeral ports are temporary ports used during communication. When a client sends a request to a server on port 80 or 443, the response usually goes back to the client’s temporary port, not to the same server listening port. That is why NACL outbound or inbound return path rules must often allow ephemeral port range.
+Ephemeral ports are temporary ports used during communication.
+When a client sends a request to a server on port 80 or 443, the response usually goes back to the client’s temporary port, not to the same server listening port.
+That is why NACL outbound or inbound return path rules must often allow ephemeral port range.
 
 31. Trainer note: one important correction
 One line often gets explained incorrectly:
@@ -406,4 +411,61 @@ we need to add IGW record in public route table to get internet. webserver act l
 we created a NAT gateway in public subnet. we attached an elastic IP to this NAT gate way. NAT gate way record is entered in privat route table.
 
 
-now launch EC2 instance name webserver, t3 micro, in network settings select in test VPC and then select public subnet enable auto asign IP
+now launch EC2 instance name webserver,amazon linux, t3 micro, in network settings select in test VPC and then select public subnet enable auto asign IP launch instace.
+SSH the instance
+install httpd: sudo yum install httpd
+sudo systemctl enable httpd
+sudo systemct status httpd 
+it is active and running.
+keep html content 
+create index.html in /var/www/html directory
+sudo vi /var/www/html/index.html
+<h1>htis is testing instance </h1>
+to access this app take public IP:80 go to browser and paste it is not accessible
+we have security group at instance level. it is not allowing port 80.
+update the SG add rule, allow port 80. in security group we have no deny option.
+refresh the browser it is accessible
+
+what is NACL whre we this NACL
+we apply NACL at subnet level.
+based on CIDR we can lauch many instaces in our subnet.
+in public subnet we created NAT gateway
+
+goto NACL create an NACL select the VPC.
+subnets are not associtaed after creating an NACL.
+slect the created NACL click on subnet associations edit the subnet associations, select the public subnet we creeated and save changes we can select the another subnet also.
+access the instace but not able to access.
+two types of traffic inbound and outbound.
+we need to allow the port 80 at NACL. 
+goto inbound rules edit rules.
+rule number 100
+protocol  
+port range 
+source info 
+allow/deny
+save the rules 
+try to access the web page. not accessible 
+go to NACL outbound rules 
+we generally give ephemeral ports. if we give 80 port for response also another customer can't use 80 port for request.
+automatically picks any port from 1024 to 65535 range
+we can now my application is loading as we allowed inbound and outbound.
+go to security group, there we can see outbound traffic is allowed by default so there is no need of allowing outbound traffic. this is called stateful 
+NACL is stateless.
+lowest rule number has highest priority
+add a NACL rule with 200 rule number and deny for port 80
+but we can aceess the server as rule 100 is allow and rule with lowest number has heigh priority.
+if we want to deny only particular IP address for example my IP (to get your IP address browse my ip in google), give your IP at source info of inbound rule. (49.205.39.192/32) /32 is the CIDR for single IP.
+
+
+if we want fast response we can add 80 port in outbound rule with low rule number compared to ephemeral port it is not wrong.
+there is no use of allowing outbound traffic without allowing inbound traffic.
+There is no need of giving NACL to private subnet as it is not exposing to internet. 
+
+
+
+
+
+
+
+
+
