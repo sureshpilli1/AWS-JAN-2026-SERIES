@@ -22,7 +22,6 @@ Ensure both VPCs have unique **CIDR blocks** to avoid conflicts.
 | **VPC-A** | `10.0.0.0/16`    |
 | **VPC-B** | `192.168.0.0/16` |
 
-please make a table without changing the content 
 **Step 2: Create a VPC Peering Connection**
 1. Go to **AWS Console** → **VPC Dashboard**.
 2. Select **"Peering Connections"** → Click **"Create Peering Connection"**.
