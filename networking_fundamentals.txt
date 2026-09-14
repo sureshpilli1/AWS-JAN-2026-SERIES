@@ -804,6 +804,14 @@ http://127.0.0.1:8080
 
 STATELESS AND STATEFUL APPLICATIONS:
 -----------------------------------
+
+1. Stateless application
+A stateless application does not keep the user's session/state in the application server between requests.
+
+2. Stateful application
+A stateful application remembers information about the client/session between requests.
+A very important example: shopping cart
+
 Stateless = "I don't need to remember you on this server."
 Stateful = "I need to remember something about you between requests."
 And one especially important DevOps point:
