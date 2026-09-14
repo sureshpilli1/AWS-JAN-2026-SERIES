@@ -802,6 +802,41 @@ http://127.0.0.1:8080
 
 
 
+STATELESS AND STATEFUL APPLICATIONS:
+-----------------------------------
+Stateless = "I don't need to remember you on this server."
+Stateful = "I need to remember something about you between requests."
+And one especially important DevOps point:
+Stateless application ≠ application with no data.
+It means the application instance doesn't rely on its own local memory/storage to preserve client state. Persistent data can be kept in external systems such as databases or Redis.
+
+| Stateless                                    | Stateful                                 |
+| -------------------------------------------- | ---------------------------------------- |
+| Doesn't depend on server-local session state | Depends on stored session/state          |
+| Each request can be handled independently    | Requests may depend on previous requests |
+| Easier to scale horizontally                 | Scaling can be more complicated          |
+| Any server can usually handle the request    | May need the same server or shared state |
+| Common in REST APIs                          | Common in session-based applications     |
+| Good fit for containers/Kubernetes           | Requires careful state management        |
+
+
+Kubernetes example
+This is why you'll often hear:
+"Keep application containers stateless."
+
+If Pod 1 dies:
+Kubernetes can create a replacement Pod:
+
+
+
+
+
+
+
+
+
+
+
 hwo transistors are manufactured:
 Modern transistors are manufactured using photolithography, where patterns are projected onto silicon wafers using highly precise light-based processes, 
 allowing billions of microscopic transistors to be created simultaneously with nanometer-scale accuracy.
