@@ -770,6 +770,33 @@ can remain stored for years without power.
 
 
 
+what is meant by local host:
+----------------------------
+localhost means "this same machine/device where the program is running."
+The special hostname is:
+localhost
+and it usually maps to the IP address:
+127.0.0.1
+This IP is called the loopback address.
+Simple example
+Suppose you start a Spring Boot application on your laptop:
+Your laptop
+┌─────────────────────────────┐
+│ Spring Boot application     │
+│ listening on port 8080      │
+└─────────────────────────────┘
+If you open:
+http://localhost:8080
+you are saying:
+"Connect to port 8080 on this same laptop."
+You could also use:
+http://127.0.0.1:8080
+
+
+
+
+
+
 
 
 
