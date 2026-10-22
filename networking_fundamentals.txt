@@ -1124,3 +1124,43 @@ Spring Boot Application
           │ API response
           ▼
 Spring Boot Application
+
+
+
+
+
+
+what happens when an application gets more traffic that is placed in a single server
+------------------------------------------------------------------------------------
+When an application receives more traffic than a single server can handle, the server may become overloaded, the application becomes slow, and eventually requests may fail. 
+Let's understand why and how DevOps engineers solve this problem.
+
+Why does the server become overloaded?
+1. CPU reaches its limit
+The server has to execute application code for incoming requests. More requests require more processing. If CPU capacity is exhausted, requests take longer to complete.
+2. RAM becomes insufficient
+Applications need memory for objects, request data, caches and connections. If memory is exhausted, the operating system may terminate processes, or the application may crash.
+3. Database becomes a bottleneck
+Many requests may query the same database. Database connections, CPU, disk I/O or query performance can become limiting factors—even if the application server still has spare capacity.
+4. Requests form a queue
+When requests arrive faster than the server can process them, they wait. Waiting increases response time, and eventually requests may time out.
+
+How do DevOps engineers solve this problem?
+There are two common approaches.
+Option A: Vertical scaling — make one server bigger
+This is called vertical scaling. It can be simple, but it has limits: a single server can still fail, and the largest server has finite capacity.
+Option B: Horizontal scaling — add more servers
+This is called horizontal scaling.
+
+In AWS, a common architecture is:
+- Application Load Balancer (ALB): distributes HTTP/HTTPS requests across healthy application servers.
+- Auto Scaling Group (ASG): adds or removes EC2 instances according to configured scaling policies.
+- CloudWatch: monitors metrics such as CPU utilization and request counts.
+- Database scaling and caching: help prevent the database from becoming the next bottleneck.
+In Kubernetes, you might scale application Pods using HPA and add worker nodes using Cluster Autoscaler or EKS node autoscaling.
+
+5. One important thing to remember
+Adding more application servers does not automatically solve every bottleneck. If all servers depend on one overloaded database, the database can still slow down the whole application.
+
+In summary: more traffic means more work. When demand exceeds the capacity of the server or another component, response times rise and failures may occur.
+DevOps engineers monitor the bottleneck and scale vertically or horizontally, while improving the application, database and caching as needed.
