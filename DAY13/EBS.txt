@@ -805,3 +805,50 @@ Example: Shared files accessed by multiple EC2 instances.
 3. Object storage – Amazon S3
 Stores data as objects inside buckets.
 Example: Images, videos, backups and log archives.
+
+
+
+
+
+what are SSD and HDD 
+--------------------
+
+HDD and SSD are two types of storage devices used in computers, laptops and servers. Both are used to store data, but they use different technologies.
+
+Let's understand them from the basics.
+1. HDD – Hard Disk Drive
+HDD stands for Hard Disk Drive.
+
+It is a traditional storage device that stores data using magnetic technology.
+
+Inside an HDD, there are rotating magnetic disks (called platters) and a read/write head.
+How does it work?
+1. HDD contains circular disks called platters.
+2. These platters are coated with magnetic material.
+3. The platters rotate at high speed.
+4. A read/write head reads and writes data by magnetically changing areas on the platter.
+5. Data remains stored even when the power is switched off.
+For example, when you save a movie on an HDD, the data is magnetically recorded on its platters.
+2. What is magnetic storage?
+Magnetic storage means storing information by changing the magnetic properties of a material.
+Think of a small magnet.
+- One magnetic state can represent binary 0.
+- Another magnetic state can represent binary 1.
+Computers use these binary values to store information.
+HDDs use this principle to store data.
+Other examples of magnetic storage:
+- HDD
+- Magnetic tape
+- Floppy disk
+
+3. SSD – Solid State Drive
+SSD stands for Solid State Drive.
+Unlike HDD, SSD does not contain rotating disks or moving mechanical parts.
+It stores data using electronic memory chips called NAND flash memory
+How does it work?
+1. SSD contains memory chips.
+2. These chips store electrical charge in memory cells.
+3. The presence or absence of charge (or different charge levels) represents data.
+4. Data can be read and written electronically.
+5. No rotating disk or mechanical read/write head is required.
+Even when power is switched off, the stored data remains.
