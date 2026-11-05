@@ -753,3 +753,55 @@ EBS → Block Storage
 ext4 → Filesystem
 Files → Stored inside filesystem
 That's why EBS is called a block-level storage service: it gives your server a raw virtual disk made up of storage blocks.
+
+
+what is block level storage:
+---------------------------
+
+Block-level storage is a type of storage in which data is stored and accessed in fixed-size units called blocks.
+In simple words, imagine a hard disk divided into thousands or millions of small blocks. Each block has its own address, and the operating system can read or write data to individual blocks.
+Let's understand this using AWS EBS.
+1. What is a block?
+Imagine you have a 100 GB hard disk.
+Internally, the storage is divided into smaller units called blocks.
+Each block can be addressed independently.
+When you save a file, the operating system's filesystem manages how the file's data is placed across these blocks.
+
+2. What is a block-level storage device in AWS?
+In AWS, Amazon EBS (Elastic Block Store) is a block-level storage service.
+Suppose you create:
+- EC2 instance: Ubuntu Linux
+- EBS volume: 20 GB
+You attach the EBS volume to the EC2 instance.
+Linux detects it as a block device, for example:
+/dev/nvme1n1
+You can check it using:
+lsblk
+You can then create a filesystem on it, mount it and store files.
+Example commands:
+# Create filesystem
+sudo mkfs -t ext4 /dev/nvme1n1
+# Create mount directory
+sudo mkdir /data
+# Mount the volume
+sudo mount /dev/nvme1n1 /data
+Now you can store files inside /data.
+Important: These commands are examples. Never run mkfs on a device containing data you want to preserve. Confirm the correct device first.
+3. How does block-level storage work?
+Consider saving a 10 MB file.
+1. You create a file in Linux.
+2. The filesystem divides the file's data into blocks.
+3. Those blocks are written to the EBS volume.
+4. When you open the file, Linux reads the required blocks from the EBS volume.
+The operating system and filesystem manage this process.
+4. Block storage vs File storage vs Object storage
+This is an important DevOps and AWS interview topic.
+1. Block storage – Amazon EBS
+Stores data in addressable blocks. The operating system manages the filesystem.
+Example: EC2 root volume, database disk.
+2. File storage – Amazon EFS
+Stores data in files and directories.
+Example: Shared files accessed by multiple EC2 instances.
+3. Object storage – Amazon S3
+Stores data as objects inside buckets.
+Example: Images, videos, backups and log archives.
