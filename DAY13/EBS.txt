@@ -852,3 +852,384 @@ How does it work?
 4. Data can be read and written electronically.
 5. No rotating disk or mechanical read/write head is required.
 Even when power is switched off, the stored data remains.
+
+
+
+
+
+FILE SYSTEM CONCEPTS:
+--------------------
+1. First, understand the complete storage process
+Suppose you create an additional 20 GB EBS volume in AWS and attach it to your Ubuntu EC2 instance.
+You cannot immediately use it like a normal folder. There are a few steps.
+How a new disk becomes usable
+1. EBS volume
+   
+   AWS provides a 20 GB virtual disk.
+2. Block device
+   
+   Linux detects the disk, for example /dev/nvme1n1.
+3. Create a filesystem
+   
+   Format the disk with XFS or ext4.
+4. Create a mount point
+   
+   Create a directory such as /data.
+5. Mount the disk
+   
+   Connect the filesystem to /data.
+6. Store files
+   
+   Now you can save files inside /data.
+
+Now let's understand each step.
+
+2. What is a filesystem?
+A filesystem is a method used by an operating system to organize, store, retrieve and manage data on a storage device.
+Imagine you purchase a new cupboard.
+The cupboard is empty. You need to arrange shelves, create sections and organize your clothes.
+Similarly, when you attach a new disk to Linux, it initially may not have a filesystem.
+Linux needs a filesystem to organize data into files and directories.
+For example:
+- Create files.
+- Create folders.
+- Read files.
+- Write files.
+- Delete files.
+- Track where data is stored.
+Without a filesystem, Linux cannot use the disk as a normal file-and-directory storage location.
+
+3. What are ext4 and XFS?
+ext4 and XFS are two different types of Linux filesystems.
+ext4
+Fourth Extended Filesystem.
+XFS
+High-performance 64-bit journaling filesystem.
+Both are used to manage files and directories in Linux.
+
+Which one should you choose?
+- ext4: Good general-purpose choice.
+- XFS: Good choice for workloads involving large files and high throughput.
+Both are commonly used with AWS EBS.
+
+4. What does creating a filesystem mean?
+Creating a filesystem means preparing a disk or partition with a filesystem structure.
+This process is also commonly called formatting.
+For example, to create an ext4 filesystem:
+sudo mkfs -t ext4 /dev/nvme1n1
+Command	      Meaning
+sudo	         Execute with administrator privileges
+mkfs	         Make filesystem
+-t	           Specify filesystem type
+ext4	         Filesystem type
+/dev/nvme1n1	 Target block device
+If you want XFS instead:
+sudo mkfs -t xfs /dev/nvme1n1
+Important warning: mkfs creates a new filesystem and can destroy existing data. Never execute it on a disk containing data you need to preserve. Check the device carefully first.
+
+5. What is a mount point?
+A mount point is a directory in Linux where you make a storage device accessible.
+For example, you have an additional 20 GB EBS volume.
+You create a directory:
+sudo mkdir /data
+Here:
+- mkdir = Make directory.
+- /data = Directory created under the root filesystem.
+Now /data is an empty directory. It is not yet connected to your new EBS volume.
+You need to mount the volume.
+
+6. What does mounting mean?
+Mounting means attaching a filesystem to a directory in the Linux directory structure so that you can access its files.
+For example:
+sudo mount /dev/nvme1n1 /data
+This means:
+- /dev/nvme1n1 = Storage device.
+- /data = Mount point.
+After mounting:
+Linux EC2 instance
+       |
+       |
+       ├── /
+       |    |
+       |    ├── home
+       |    ├── etc
+       |    ├── var
+       |    └── data  ← Additional EBS volume mounted here
+       |                  |
+       |                  ├── file1.txt
+       |                  ├── file2.txt
+       |                  └── folder1
+
+
+Now you can save files:
+sudo touch /data/file1.txt
+You can check:
+ls /data
+
+You should see:
+file1.txt
+Important: Mounting does not mean copying data from one disk to another. It makes the filesystem on the disk accessible through a directory.
+
+7. Understanding the commands you mentioned
+Let's examine each command individually.
+Command 1: lsblk
+lsblk
+Full meaning: List Block Devices.
+This command displays the block storage devices attached to your Linux system.
+For example:
+NAME          MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
+nvme0n1       259:0    0   20G  0 disk
+├─nvme0n1p1   259:1    0   20G  0 part /
+nvme1n1       259:2    0   20G  0 disk
+
+
+Let's understand this output:
+Name	         Meaning
+nvme0n1	      First disk
+nvme0n1p1	    First partition of first disk
+nvme1n1	      Second disk
+20G	          Disk size
+disk	         Whole disk
+part	         Partition
+/	            Mounted at root directory
+
+Notice:
+- nvme0n1 is your first disk.
+- nvme0n1p1 is a partition of that disk.
+- / means that partition is mounted as the root filesystem.
+- nvme1n1 is another disk, which is not mounted yet.
+
+
+You can use:
+lsblk -f
+This displays additional filesystem information, such as:
+- Filesystem type
+- UUID
+- Filesystem label
+- Mount point
+
+Command 2: df -Th
+df -Th
+Full meaning:
+- df = Disk Free.
+- -T = Display filesystem type.
+- -h = Human-readable sizes (GB, MB, KB).
+This command displays filesystem disk space usage.
+
+Example:
+Filesystem       Type   Size  Used Avail Use% Mounted on
+/dev/root        ext4    20G   8G    11G  43%  /
+/dev/nvme1n1     xfs     20G   1G    19G   5%  /data
+
+Let's understand the columns:
+Column	          Meaning
+Filesystem	      Device or filesystem name
+Type	            Filesystem type (ext4, XFS)
+Size	            Total filesystem size
+Used	            Space already consumed
+Avail	           Available space
+Use%	            Percentage of space used
+Mounted on	      Directory where filesystem is mounted
+
+Example:
+
+Suppose your EBS volume is 20 GB.
+- Total size = 20 GB
+- Used = 5 GB
+- Available = 15 GB
+- Usage = 25%
+You can check the usage of a particular directory:
+df -Th /data
+
+Command 3: file -s /dev/nvme1n1
+sudo file -s /dev/nvme1n1
+This command is particularly useful when working with newly attached EBS volumes.
+Let's break it down:
+Part	Meaning
+file	Identifies the type of a file or device
+-s	Examines special/block device files
+/dev/nvme1n1	Device being examined
+
+Why do we use it?
+Suppose you attach a new EBS volume to EC2.
+You want to know:
+Does this disk already contain a filesystem, or is it a blank disk?
+
+Run:
+sudo file -s /dev/nvme1n1
+
+Possible output 1:
+/dev/nvme1n1: data
+This often indicates that the device does not have a recognizable filesystem signature.
+
+Possible output 2:
+/dev/nvme1n1: SGI XFS filesystem data
+This indicates that an XFS filesystem is present.
+
+Possible output 3:
+/dev/nvme1n1: Linux rev 1.0 ext4 filesystem data
+This indicates that an ext4 filesystem is present.
+
+Important
+ file -s is an identification command. It does not create a filesystem or format the disk.
+Also, data alone is not absolute proof that a disk is empty. Check its partitions and signatures before formatting.
+
+8. Difference between lsblk, df -Th and file -s
+This is an important interview question.
+Command	What does it tell you?
+lsblk	What disks and partitions are attached?
+df -Th	How much filesystem space is used and available?
+file -s	What type of data or filesystem signature is present on a device?
+
+Remember:
+lsblk
+  ↓
+Identify disks and partitions
+
+file -s
+  ↓
+Identify filesystem signature
+
+df -Th
+  ↓
+Check mounted filesystem and disk usage
+
+
+9. What is a partition?
+A partition means dividing a physical or virtual disk into separate logical sections.
+Suppose you have a 100 GB disk.
+You can divide it into:
+100 GB Disk
+    |
+    ├── Partition 1 → 50 GB
+    |
+    └── Partition 2 → 50 GB
+
+
+Linux identifies partitions using names such as:
+/dev/nvme1n1       → Entire disk
+/dev/nvme1n1p1     → First partition
+/dev/nvme1n1p2     → Second partition
+
+You can create a filesystem directly on an entire disk or on a partition.
+For many Linux setups, partitions are used, but a separate EBS data volume can also have a filesystem directly on the whole device.
+
+10. Complete practical example using AWS EBS
+Let's imagine you have:
+- EC2 instance: Ubuntu
+- Root EBS volume: 20 GB
+- Additional EBS volume: 20 GB
+You want to use the additional EBS volume for storing application data.
+Your EC2 storage
+Root EBS – 20 GB
+
+/dev/nvme0n1 → /
+Already mounted
+
+Additional EBS – 20 GB
+
+/dev/nvme1n1 → Not mounted yet
+Needs setup
+
+
+Follow these steps.
+
+Step 1: Identify the disk
+lsblk
+
+
+Find your additional disk.
+
+Step 2: Check whether a filesystem exists
+sudo file -s /dev/nvme1n1
+
+
+If it is a new, blank disk, you may see:
+/dev/nvme1n1: data
+
+
+Step 3: Create an ext4 filesystem
+
+Only after confirming that this is the correct, unused disk:
+sudo mkfs -t ext4 /dev/nvme1n1
+
+Step 4: Create a mount point
+sudo mkdir /data
+
+Step 5: Mount the disk
+sudo mount /dev/nvme1n1 /data
+
+Step 6: Verify the mount
+df -Th
+
+You should see something similar to:
+Filesystem       Type   Size  Used Avail Use% Mounted on
+/dev/nvme0n1p1   ext4    20G    8G   11G  43%  /
+/dev/nvme1n1    ext4    20G   24M   19G   1%  /data
+
+Step 7: Store a file
+sudo touch /data/test.txt
+
+Check:
+ls /data
+
+Output:
+test.txt
+Congratulations! Your additional EBS volume is now usable.
+
+11. What is unmounting?
+Unmounting means disconnecting a mounted filesystem from its mount point.
+For example:
+sudo umount /data
+After unmounting:
+- The EBS volume is still attached to EC2.
+- The filesystem still exists.
+- The data is still stored on the volume.
+- You cannot access that filesystem through /data until you mount it again.
+To mount it again:
+sudo mount /dev/nvme1n1 /data
+Before unmounting, make sure applications are not actively using the filesystem.
+
+12. What happens after restarting EC2?
+There is one more important concept.
+If you mount a volume using:
+sudo mount /dev/nvme1n1 /data
+the mount generally does not automatically survive a reboot.
+To make it persistent, Linux uses a configuration file called:
+/etc/fstab
+
+You can use the filesystem UUID rather than relying on a device name.
+Find the UUID:
+sudo blkid /dev/nvme1n1
+
+Example output:
+/dev/nvme1n1: UUID="1234-abcd" TYPE="ext4"
+
+
+Then add an entry to /etc/fstab:
+UUID=1234-abcd  /data  ext4  defaults,nofail  0  2
+
+
+This tells Linux to mount the filesystem at /data during startup.
+
+The nofail option helps the system continue booting if the additional volume is unavailable.
+
+Test the configuration before rebooting:
+sudo mount -a
+For production systems, verify the UUID and filesystem type carefully before editing /etc/fstab.
+
+13. Important Linux storage commands – Cheat sheet
+You can copy this directly into your Linux notes.
+Command	                              Purpose
+lsblk	                                List block devices
+lsblk -f	                             Show filesystem information
+df -h	                                Show disk usage in human-readable format
+df -Th	                               Show disk usage and filesystem type
+sudo file -s /dev/nvme1n1	            Identify device contents/signature
+sudo mkfs -t ext4 DEVICE	             Create ext4 filesystem
+sudo mkfs -t xfs DEVICE	              Create XFS filesystem
+sudo mkdir /data	                     Create mount directory
+sudo mount DEVICE /data	              Mount filesystem
+sudo umount /data	                    Unmount filesystem
+sudo blkid	                           Display filesystem UUIDs and types
+sudo mount -a	                        Mount filesystems configured in fstab
