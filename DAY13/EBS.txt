@@ -1233,3 +1233,48 @@ sudo mount DEVICE /data	              Mount filesystem
 sudo umount /data	                    Unmount filesystem
 sudo blkid	                           Display filesystem UUIDs and types
 sudo mount -a	                        Mount filesystems configured in fstab
+
+
+
+
+
+
+df -Th checks filesystems that are currently mounted and shows their disk-space usage.
+file -s /dev/nvme1n1 examines a particular storage device to identify whether it contains a recognizable filesystem signature.
+
+Command	Question it answers
+lsblk	What storage devices are attached?
+file -s	Does this device contain a recognizable filesystem signature?
+df -Th	Which filesystems are mounted and how much space is available?
+One important point: A filesystem can exist on a disk even when it is not mounted. Therefore, df -Th may not show it, but file -s may identify its filesystem signature.
+Also, file -s checks the specified device only. If the filesystem is on a partition, check that partition too (for example, /dev/nvme1n1p1).
+
+My suggestion: Remember the sequence lsblk → file -s → mkfs → mount → df -Th. It represents the basic workflow for preparing and using an additional EBS volume.
+
+
+
+A filesystem signature is a special identifying pattern of data written on a storage device when you create a filesystem such as ext4 or XFS.
+
+Think of it like an identity card for a filesystem. It helps Linux recognize what type of filesystem is present on a disk or partition.
+Attach EBS volume
+       |
+       ▼
+/dev/nvme1n1
+       |
+       ▼
+Check filesystem signature
+file -s /dev/nvme1n1
+       |
+       ▼
+Create filesystem
+mkfs -t ext4
+       |
+       ▼
+Filesystem metadata and signature written
+       |
+       ▼
+Mount filesystem
+mount /dev/nvme1n1 /data
+       |
+       ▼
+Access files through /data
